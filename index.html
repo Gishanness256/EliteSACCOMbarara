@@ -1,1 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elite SACCO Mbarara</title>
+  <style>
+    :root {
+      --blue: #1c4ba0;
+      --blue-dark: #153a7e;
+      --white: #ffffff;
+      --border: #cfd8ec;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--white);
+      color: var(--blue);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--white);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-size: 1.05rem;
+    }
+
+    .brand img {
+      height: 48px;
+      width: auto;
+      background: var(--white);
+      border-radius: 6px;
+      padding: 3px;
+    }
+
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .tabs a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 9px 18px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .tabs a:hover,
+    .tabs a:focus-visible {
+      background: var(--white);
+      color: var(--blue);
+      outline: none;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      border: 2px solid var(--blue);
+      border-radius: 12px;
+      padding: 32px 28px;
+      background: var(--white);
+      box-shadow: 0 6px 20px rgba(28, 75, 160, 0.15);
+    }
+
+    .login-card .logo {
+      display: block;
+      height: 90px;
+      width: auto;
+      margin: 0 auto 14px;
+    }
+
+    .login-card h1 {
+      text-align: center;
+      font-size: 1.35rem;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .field { margin-bottom: 18px; }
+
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 1rem;
+      color: var(--blue-dark);
+      background: var(--white);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(28, 75, 160, 0.18);
+    }
+
+    .password-wrap { position: relative; }
+
+    .toggle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 4px 6px;
+    }
+
+    .password-wrap input { padding-right: 60px; }
+
+    button.submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button.submit:hover { background: var(--blue-dark); }
+
+    footer {
+      background: var(--blue);
+      color: var(--white);
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 560px) {
+      .nav { justify-content: center; }
+      .login-card { padding: 26px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav">
+      <a class="brand" href="index.html">
+        <img src="logo.png" alt="Elite SACCO Mbarara logo">
+        <span>Elite SACCO Mbarara</span>
+      </a>
+      <nav class="tabs" aria-label="Main">
+        <a href="about.html">About Us</a>
+        <a href="services.html">Services</a>
+        <a href="registration.html">Registration</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="login-card" aria-labelledby="login-title">
+      <img class="logo" src="logo.png" alt="Elite SACCO Mbarara logo">
+      <h1 id="login-title">Login</h1>
+
+      <form id="loginForm" action="#" method="post" autocomplete="on">
+        <div class="field">
+          <label for="identifier">Email or Phone Number</label>
+          <input type="text" id="identifier" name="identifier" autocomplete="username" required>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+            <button type="button" class="toggle" id="toggle" aria-label="Show password">Show</button>
+          </div>
+        </div>
+
+        <button type="submit" class="submit">Login</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2026 Elite SACCO Mbarara. All rights reserved.<br>
+    Developed by Gisha-Tech Innovations
+  </footer>
+
+  <script>
+    var pw = document.getElementById('password');
+    var toggle = document.getElementById('toggle');
+    toggle.addEventListener('click', function () {
+      var show = pw.type === 'password';
+      pw.type = show ? 'text' : 'password';
+      toggle.textContent = show ? 'Hide' : 'Show';
+      toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
+  </script>
+
+</body>
+</html>
 
