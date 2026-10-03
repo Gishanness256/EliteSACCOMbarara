@@ -1,1 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <path id="shield" d="M230 150 Q400 118 570 150 L570 380 Q570 480 400 565 Q230 480 230 380 Z"/>
+    <clipPath id="inner">
+      <path d="M230 150 Q400 118 570 150 L570 380 Q570 480 400 565 Q230 480 230 380 Z" transform="translate(400 355) scale(0.86) translate(-400 -355)"/>
+    </clipPath>
+  </defs>
+
+  <rect width="800" height="800" fill="#ffffff"/>
+
+  <!-- Shield: blue outer, white band, blue field -->
+  <use href="#shield" fill="#1a3fa0"/>
+  <use href="#shield" fill="#ffffff" transform="translate(400 355) scale(0.93) translate(-400 -355)"/>
+  <use href="#shield" fill="#1a3fa0" transform="translate(400 355) scale(0.86) translate(-400 -355)"/>
+
+  <g clip-path="url(#inner)">
+    <!-- Orbit ring (back) -->
+    <g transform="rotate(-32 400 350)" fill="none">
+      <ellipse cx="400" cy="350" rx="175" ry="62" stroke="#ffffff" stroke-width="14"/>
+    </g>
+
+    <!-- Letter e -->
+    <circle cx="400" cy="350" r="108" fill="#1a3fa0"/>
+    <circle cx="400" cy="350" r="100" fill="#ffffff"/>
+    <ellipse cx="400" cy="322" rx="42" ry="30" fill="#1a3fa0"/>
+    <rect x="300" y="346" width="210" height="26" fill="#ffffff"/>
+    <rect x="400" y="372" width="130" height="22" fill="#1a3fa0"/>
+
+    <!-- Orbit ring (front, lower half) -->
+    <g transform="rotate(-32 400 350)" fill="none" stroke-linecap="round">
+      <path d="M225 350 A175 62 0 0 0 575 350" stroke="#1a3fa0" stroke-width="30"/>
+      <path d="M225 350 A175 62 0 0 0 575 350" stroke="#ffffff" stroke-width="14"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="400" y="660" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="58" fill="#1a3fa0" textLength="640" lengthAdjust="spacingAndGlyphs">ELITE SACCO MBARARA</text>
+</svg>
 
