@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found · Elite SACCO Mbarara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1B3C91;--blue-deep:#0F2566;--blue-ink:#0A1A4A;--blue-soft:#E9EEFB;--blue-mid:#6C85CC;
+  --white:#fff;--line:#D5DDF2;
+  --font:"Manrope","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{height:100%}
+body{
+  font-family:var(--font);color:var(--white);min-height:100%;display:flex;flex-direction:column;
+  background:
+    radial-gradient(900px 500px at 85% -10%,rgba(108,133,204,.55),transparent 60%),
+    radial-gradient(700px 500px at -10% 110%,rgba(108,133,204,.35),transparent 60%),
+    linear-gradient(160deg,var(--blue) 0%,var(--blue-deep) 100%);
+  background-attachment:fixed;
+  position:relative;overflow-x:hidden;
+}
+body::before,body::after{
+  content:"";position:fixed;z-index:0;pointer-events:none;
+  background:rgba(255,255,255,.045);
+  clip-path:path("M0 0H300V170C300 270 220 340 150 380C80 340 0 270 0 170Z");
+}
+body::before{width:300px;height:380px;top:12%;left:-90px;transform:rotate(-12deg) scale(1.3)}
+body::after{width:300px;height:380px;bottom:-60px;right:-70px;transform:rotate(14deg) scale(1.6)}
+
+main{
+  position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;
+  padding:2.5rem 1rem;text-align:center;
+}
+.card{
+  width:100%;max-width:540px;background:var(--white);color:var(--blue-ink);border-radius:28px;padding:2.6rem 2.2rem 2.4rem;
+  box-shadow:0 40px 80px -20px rgba(5,15,50,.55),0 0 0 1px rgba(255,255,255,.4);
+  animation:rise .7s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.code{
+  font-size:clamp(4rem,18vw,7rem);font-weight:800;letter-spacing:-.04em;line-height:1;
+  background:linear-gradient(135deg,var(--blue) 0%,var(--blue-deep) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--blue);
+}
+.tagline{margin-top:.4rem;color:var(--blue-mid);font-weight:700;letter-spacing:.18em;font-size:.78rem;text-transform:uppercase}
+h1{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;color:var(--blue);margin-top:1.2rem}
+p{line-height:1.7;margin-top:.7rem;color:#3a4a78;font-size:.98rem}
+.path{
+  display:inline-block;margin-top:1rem;padding:.4rem .8rem;border-radius:10px;
+  background:var(--blue-soft);color:var(--blue);font-weight:700;font-size:.85rem;
+  word-break:break-all;max-width:100%;
+}
+.btn{
+  display:inline-block;margin-top:1.8rem;padding:1rem 1.6rem;border:0;border-radius:14px;cursor:pointer;
+  font:700 1rem var(--font);letter-spacing:.02em;color:var(--white);text-decoration:none;
+  background:linear-gradient(135deg,var(--blue) 0%,var(--blue-deep) 100%);
+  box-shadow:0 14px 26px -10px rgba(27,60,145,.7);transition:transform .15s,box-shadow .2s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 18px 30px -10px rgba(27,60,145,.8)}
+.btn:active{transform:translateY(0)}
+.btn:focus-visible{outline:3px solid #A9BBF0;outline-offset:3px}
+.alt{display:block;margin-top:1rem;font-size:.88rem;color:var(--blue-ink)}
+.alt a{color:var(--blue);font-weight:700;text-decoration:none;border-bottom:2px solid var(--blue-mid)}
+.alt a:hover{border-bottom-color:var(--blue)}
+.count{display:inline-block;margin-top:1rem;font-size:.8rem;color:#5a6890;font-weight:600}
+footer{
+  position:relative;z-index:1;text-align:center;color:rgba(255,255,255,.8);font-size:.82rem;line-height:1.7;
+  padding:1.2rem 1rem 1.5rem;border-top:1px solid rgba(255,255,255,.14);
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <section class="card">
+    <div class="code">404</div>
+    <div class="tagline">Elite SACCO Mbarara</div>
+    <h1>Page not found</h1>
+    <p>The link you followed may be broken, or the page may have been moved or removed.</p>
+    <div class="path" id="path"></div>
+    <a class="btn" href="./" id="home">Return to the app</a>
+    <span class="count" id="count"></span>
+    <p class="alt">Or <a href="./">open Elite SACCO Mbarara</a> and sign in from the start.</p>
+  </section>
+</main>
+<footer>&copy; 2026 Elite SACCO Mbarara. All rights reserved.<br>Developed by Gisha-Tech Innovations</footer>
+
+<script>
+(function(){
+  // Preserve the deep link the user (or a bookmark / shared URL) tried to open.
+  // The main app can read sessionStorage.redirect on load and route accordingly if it ever
+  // adopts URL-based routing. For now we bounce back to the root SPA.
+  try{
+    sessionStorage.setItem('redirect', location.pathname + location.search + location.hash);
+  }catch(e){/* sessionStorage may be unavailable in private mode — fall through */}
+
+  // Show the path that triggered the 404, capped so we don't flood the page.
+  var raw = location.pathname + location.search + location.hash;
+  document.getElementById('path').textContent = raw.length > 96 ? raw.slice(0, 93) + '...' : raw;
+
+  // Resolve the app root relative to this 404, so it works for both project Pages
+  // (https://user.github.io/repo/) and user/org Pages (https://user.github.io/).
+  var root = location.pathname.replace(/\/[^/]*$/, '/');
+  document.getElementById('home').setAttribute('href', root);
+
+  // Auto-redirect after 4 seconds unless the user has navigated away or prefers to click.
+  var left = 4, tick;
+  function showCountdown(){
+    var el = document.getElementById('count');
+    if(!el) return;
+    el.textContent = 'Returning automatically in ' + left + 's…';
+  }
+  showCountdown();
+  tick = setInterval(function(){
+    left--;
+    if(left <= 0){
+      clearInterval(tick);
+      location.replace(root);
+      return;
+    }
+    showCountdown();
+  }, 1000);
+
+  // Cancel the auto-redirect if the user clicks anywhere in the card (e.g. on the button).
+  document.querySelector('.card').addEventListener('click', function(){
+    clearInterval(tick);
+    var el = document.getElementById('count');
+    if(el) el.textContent = '';
+  }, {once:false});
+})();
+</script>
+</body>
+</html>
