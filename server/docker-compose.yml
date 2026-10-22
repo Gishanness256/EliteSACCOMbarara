@@ -1,0 +1,88 @@
+# ============================================================================
+# Elite SACCO Mbarara — local development stack
+# ----------------------------------------------------------------------------
+# Brings up PostgreSQL + the API server with one command:
+#
+#   docker compose up -d
+#   docker compose logs -f api
+#   docker compose down            # stop
+#   docker compose down -v         # stop and delete the DB volume
+#
+# The API will be available at http://localhost:4000
+# Postgres will be available at localhost:5432 (sacco / sacco_pass)
+#
+# Migrations are applied automatically on container start via the
+# entrypoint script. To seed the default admin user, set RUN_SEED=1
+# in .env or below.
+# ============================================================================
+
+services:
+  db:
+    image: postgres:16-bookworm
+    container_name: sacco-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sacco
+      POSTGRES_PASSWORD: sacco_pass
+      POSTGRES_DB: elite_sacco
+      # Tuning for dev — increase for production
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
+    volumes:
+      - sacco_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sacco -d elite_sacco"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - sacco-net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: elite-sacco-api:1.0.0
+    container_name: sacco-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "4000"
+      HOST: "0.0.0.0"
+      LOG_LEVEL: info
+      DATABASE_URL: postgres://sacco:sacco_pass@db:5432/elite_sacco
+      PGSSLMODE: disable
+      JWT_SECRET: ${JWT_SECRET:-dev-only-insecure-secret-change-me}
+      CORS_ORIGIN: http://localhost:3000,https://elitesacco.co.ug
+      RATE_LIMIT_WINDOW_MS: "900000"
+      RATE_LIMIT_MAX: "300"
+      BCRYPT_ROUNDS: "12"
+      # Set RUN_SEED=1 on first launch to create the default admin user
+      RUN_SEED: ${RUN_SEED:-0}
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://127.0.0.1:4000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - sacco-net
+
+volumes:
+  sacco_pgdata:
+    name: elite_sacco_pgdata
+
+networks:
+  sacco-net:
+    name: elite_sacco_net
+    driver: bridge
