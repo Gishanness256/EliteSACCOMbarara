@@ -1,0 +1,191 @@
+{
+  "name": "elite-sacco-mbarara-server",
+  "version": "1.0.0",
+  "description": "Backend service for Elite SACCO Mbarara — users, members, savings, loans, regulatory returns, and a tamper-evident audit log. PostgreSQL-backed, with idempotent SQL migrations.",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": "Gisha-Tech Innovations",
+  "homepage": "https://elitesacco.co.ug",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0 <21.0.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon --watch src --watch migrations src/server.js",
+    "lint": "eslint src/ migrations/ scripts/ --ext .js,.mjs",
+    "lint:fix": "eslint src/ migrations/ scripts/ --ext .js,.mjs --fix",
+    "format": "prettier --write \"src/**/*.js\" \"scripts/**/*.js\" \"migrations/**/*.js\"",
+    "test": "jest --runInBand --forceExit --detectOpenHandles",
+    "test:watch": "jest --watch --runInBand",
+    "test:coverage": "jest --coverage --runInBand --forceExit --detectOpenHandles",
+    "test:e2e": "jest --config jest.e2e.config.js --runInBand --forceExit",
+
+    "db:migrate": "node scripts/migrate.js up",
+    "db:migrate:up": "node scripts/migrate.js up",
+    "db:migrate:down": "node scripts/migrate.js down",
+    "db:migrate:one": "node scripts/migrate.js one",
+    "db:migrate:redo": "node scripts/migrate.js redo",
+    "db:migrate:status": "node scripts/migrate.js status",
+    "db:migrate:verify": "node scripts/migrate.js verify",
+    "db:migrate:create": "node scripts/migrate.js create",
+    "db:migrate:fresh": "node scripts/migrate.js fresh",
+
+    "db:seed": "node scripts/seed.js",
+    "db:seed:dev": "NODE_ENV=development node scripts/seed.js",
+    "db:audit:verify": "node scripts/audit-verify.js",
+    "db:audit:archive": "node scripts/audit-archive.js",
+
+    "db:backup": "node scripts/backup.js",
+    "db:restore": "node scripts/restore.js",
+
+    "build": "node scripts/build.js",
+    "clean": "rimraf dist coverage",
+    "prepublishOnly": "npm run clean && npm run lint && npm run test"
+  },
+  "dependencies": {
+    "pg": "^8.13.1",
+    "pg-pool": "^3.7.0",
+    "pg-native": "^3.4.0",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "helmet": "^8.0.0",
+    "compression": "^1.7.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "express-validator": "^7.2.0",
+    "multer": "^1.4.5-lts.1",
+    "xlsx": "^0.18.5",
+    "pdfjs-dist": "^3.11.174",
+    "pdf-parse": "^1.1.1",
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
+    "dotenv": "^16.4.7",
+    "dotenv-expand": "^12.0.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "morgan": "^1.10.0",
+    "uuid": "^11.0.3",
+    "date-fns": "^4.1.0",
+    "decimal.js": "^10.4.3",
+    "zod": "^3.24.1",
+    "joi": "^17.13.3",
+    "express-async-errors": "^3.1.1",
+    "http-errors": "^2.0.0",
+    "node-cron": "^3.0.3",
+    "argon2": "^0.41.1",
+    "otplib": "^12.0.1",
+    "qrcode": "^1.5.4"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.9",
+    "utf-8-validate": "^6.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-security": "^3.0.1",
+    "prettier": "^3.4.2",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "testcontainers": "^10.16.0",
+    "rimraf": "^6.0.1",
+    "cross-env": "^7.0.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/src/**/*.test.js",
+      "<rootDir>/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/server.js",
+      "!src/**/__tests__/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ]
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "tests/*",
+      "coverage/*",
+      "dist/*"
+    ],
+    "delay": "500ms",
+    "env": {
+      "NODE_ENV": "development"
+    }
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true,
+      "es2022": true,
+      "jest": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "commonjs"
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:node/recommended",
+      "plugin:security/recommended",
+      "prettier"
+    ],
+    "rules": {
+      "no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "no-process-exit": "off",
+      "node/exports-style": [
+        "error",
+        "module.exports"
+      ],
+      "security/detect-object-injection": "off"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 100,
+    "tabWidth": 2,
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.sql": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  }
+}
