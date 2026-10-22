@@ -1,0 +1,290 @@
+Elite SACCO Mbarara — Web Application
+Licence Terms & Conditions
+Version 1.0 — Effective 2026
+
+===========================================================================
+  1. COPYRIGHT OWNERSHIP
+===========================================================================
+
+Copyright © 2026 Elite SACCO Mbarara (formerly Obwesigwa Financial
+Services), Mbarara, Uganda. All rights reserved.
+
+The Elite SACCO Mbarara web application (the "Software") — comprising the
+files `index.html`, `404.html`, `README.md`, and this `LICENSE` file — was
+designed, developed, and delivered by Gisha-Tech Innovations ("Developer")
+under a commercial engagement with Elite SACCO Mbarara ("Licensor").
+
+All intellectual property rights in and to the Software, including but not
+limited to source code, object code, HTML markup, Cascading Style Sheets,
+JavaScript, visual design, copy, and the "Elite SACCO Mbarara" word mark
+and associated logos, are and shall remain the exclusive property of
+Elite SACCO Mbarara, except for the third-party components identified in
+Section 7 below, which are governed by their respective licences.
+
+===========================================================================
+  2. GRANT OF LICENCE
+===========================================================================
+
+Subject to the terms and conditions of this Licence, Elite SACCO Mbarara
+hereby grants to itself (and to its officers, employees, agents, and
+contractors acting on its behalf) a perpetual, worldwide,
+non-exclusive, royalty-free, internal-use licence to:
+
+  (a) install, run, and host the Software on any web server or static
+      hosting service controlled by Elite SACCO Mbarara, including but
+      not limited to GitHub Pages, Netlify, Vercel, or a private server;
+
+  (b) use the Software for the legitimate business operations of Elite
+      SACCO Mbarara, including member registration, savings, loans,
+      portfolio management, reporting, and regulatory compliance;
+
+  (c) modify, adapt, or extend the Software for its own internal use;
+
+  (d) make backup copies of the Software and the data it stores; and
+
+  (e) deploy the Software under any domain owned or controlled by
+      Elite SACCO Mbarara.
+
+===========================================================================
+  3. RESERVED RIGHTS
+===========================================================================
+
+All rights not expressly granted to Elite SACCO Mbarara in Section 2 are
+reserved by the Licensor and/or the Developer. No rights are granted to
+any third party except as expressly stated in writing by Elite SACCO
+Mbarara and the Developer.
+
+===========================================================================
+  4. RESTRICTIONS
+===========================================================================
+
+The licence granted in Section 2 is conditioned on the following
+restrictions. Violation of any restriction automatically terminates the
+licence granted to the offending party.
+
+  (a) NO REDISTRIBUTION. You may not sell, sub-licence, lease, rent,
+      lend, or otherwise distribute the Software, in whole or in part, to
+      any third party, whether for profit or free of charge.
+
+  (b) NO COMMERCIAL RESALE OR HOSTED SERVICE. You may not operate the
+      Software, or any derivative of it, as a hosted service offered to
+      third parties (e.g., as a multi-tenant SaaS) without prior written
+      authorisation from Elite SACCO Mbarara and the Developer.
+
+  (c) NO DERIVATIVE DISTRIBUTION. You may modify the Software for your
+      own internal use (Section 2(c)) but you may not distribute, publish,
+      or otherwise make available any modified version of the Software to
+      any third party.
+
+  (d) SOURCE CODE CONFIDENTIALITY. The source code of the Software is
+      confidential. You may not publish, mirror, expose in a public
+      repository, or otherwise disclose the source code to any third party,
+      except to authorised contractors who are bound by written
+      confidentiality obligations at least as protective as this Licence.
+
+  (e) TRADEMARK NOTICE REQUIRED. Every deployed copy of the Software must
+      retain the "© 2026 Elite SACCO Mbarara" footer notice and the
+      "Developed by Gisha-Tech Innovations" credit. You may not remove,
+      alter, or obscure these attributions in any deployed copy.
+
+  (f) NO COMPETING USE. You may not use the Software, in whole or in part,
+      to develop, train, or improve any product or service that competes
+      with the Software.
+
+  (g) COMPLIANCE WITH LAW. You must use the Software in compliance with
+      all applicable laws of Uganda, including but not limited to the
+      Microfinance Act, the Tier 4 Microfinance Institutions and Money
+      Lenders Act, regulations of the Uganda Microfinance Regulatory
+      Authority (UMRA), and the Data Protection and Privacy Act, 2019.
+
+===========================================================================
+  5. DATA PROTECTION & PRIVACY
+===========================================================================
+
+The Software handles personal data of SACCO members and borrowers
+(including names, telephone numbers, national identification numbers,
+addresses, photographs, and financial transactions). You are solely
+responsible for:
+
+  (a) obtaining lawful consent from data subjects before capture;
+  (b) securing the data against unauthorised access, disclosure, or loss;
+  (c) honouring data subject rights (access, correction, erasure);
+  (d) reporting data breaches to the Personal Data Protection Office
+      (PDPO) of Uganda within 72 hours of becoming aware of a breach; and
+  (e) ensuring the hosting provider (e.g., GitHub Pages) complies with
+      applicable data transfer rules.
+
+The Licensor and Developer accept no responsibility for the manner in
+which personal data captured through the Software is processed, stored,
+or transferred.
+
+===========================================================================
+  6. REGULATORY COMPLIANCE
+===========================================================================
+
+The Software produces regulatory returns aligned to a common prudential
+return structure for SACCOs in Uganda. However:
+
+  (a) the benchmarks, provision rates, and templates shipped are
+      indicative defaults only and may not match the latest UMRA
+      guidelines or prescribed forms;
+
+  (b) you are responsible for confirming all figures against the
+      regulator's current requirements before submission; and
+
+  (c) the Licensor and Developer make no representation that the
+      Software's outputs will be accepted by any regulator, auditor, or
+      financial examiner.
+
+===========================================================================
+  7. THIRD-PARTY COMPONENTS
+===========================================================================
+
+The Software bundles or references the following third-party components,
+each governed by its own licence. Those licences (not this Licence)
+govern the use of the respective components.
+
+  ┌─────────────────────────────┬──────────────────┬─────────────────────┐
+  │ Component                   │ Version          │ Licence              │
+  ├─────────────────────────────┼──────────────────┼─────────────────────┤
+  │ SheetJS (XLSX)              │ 0.18.5           │ Apache License 2.0   │
+  │ https://sheetjs.com         │                  │                     │
+  ├─────────────────────────────┼──────────────────┼─────────────────────┤
+  │ jsPDF                       │ 2.5.1            │ MIT License          │
+  │ https://github.com/parallax/│                  │                     │
+  │              jsPDF          │                  │                     │
+  ├─────────────────────────────┼──────────────────┼─────────────────────┤
+  │ jspdf-autotable             │ 3.8.2            │ MIT License          │
+  │ https://github.com/simonbengt│                  │                     │
+  │        /jsPDF-AutoTable     │                  │                     │
+  ├─────────────────────────────┼──────────────────┼─────────────────────┤
+  │ pdf.js                      │ 3.11.174         │ Apache License 2.0   │
+  │ https://mozilla.github.io/  │                  │                     │
+  │              pdf.js/        │                  │                     │
+  ├─────────────────────────────┼──────────────────┼─────────────────────┤
+  │ Manrope typeface            │ 1.x              │ SIL Open Font        │
+  │ https://manropefont.com     │                  │ License 1.1 (OFL)    │
+  ├─────────────────────────────┼──────────────────┼─────────────────────┤
+  │ Google Fonts delivery        │ n/a              │ Google Fonts API     │
+  │ https://fonts.google.com    │                  │ UI restricted / OFL  │
+  └─────────────────────────────┴──────────────────┴─────────────────────┘
+
+You must comply with the terms of each third-party licence (including
+any attribution requirements) when redistributing or hosting the
+Software. The full text of the Apache License 2.0, MIT License, and OFL
+1.1 is available at:
+
+  • https://www.apache.org/licenses/LICENSE-2.0
+  • https://opensource.org/licenses/MIT
+  • https://scripts.sil.org/OFL
+
+===========================================================================
+  8. TRADEMARKS
+===========================================================================
+
+"Elite SACCO Mbarara", the Elite SACCO logo, and "Gisha-Tech
+Innovations" are trade names and/or trademarks of their respective
+owners. Nothing in this Licence grants any right to use these names,
+marks, or logos except as required to display the unaltered attribution
+notices described in Section 4(e).
+
+===========================================================================
+  9. NO WARRANTY
+===========================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY OF
+ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING BUT NOT
+LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+
+The Licensor and Developer do not warrant that the Software will be
+error-free, uninterrupted, secure, free from vulnerabilities, or
+suitable for any particular purpose. The Software is intended for use as
+an internal administrative tool and is not a substitute for professional
+accounting, audit, or legal advice.
+
+You assume all risk arising from the use of the Software, including the
+risk of data loss, financial miscalculation, regulatory non-compliance,
+and business interruption.
+
+===========================================================================
+  10. LIMITATION OF LIABILITY
+===========================================================================
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE
+LICENSOR, THE DEVELOPER, OR THEIR RESPECTIVE OFFICERS, DIRECTORS,
+EMPLOYEES, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
+SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS,
+DATA, MEMBERS, OR GOODWILL, ARISING OUT OF OR RELATING TO THE USE OF,
+OR INABILITY TO USE, THE SOFTWARE, WHETHER BASED IN CONTRACT, TORT
+(INCLUDING NEGLIGENCE), STRICT LIABILITY, OR OTHERWISE, EVEN IF THE
+LICENSOR OR DEVELOPER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES.
+
+IN NO EVENT SHALL THE AGGREGATE LIABILITY OF THE LICENSOR AND DEVELOPER
+EXCEED THE TOTAL AMOUNTS ACTUALLY PAID BY ELITE SACCO MBARARA TO
+GISHA-TECH INNOVATIONS FOR THE DEVELOPMENT AND DELIVERY OF THE
+SOFTWARE.
+
+===========================================================================
+  11. TERM & TERMINATION
+===========================================================================
+
+This Licence is effective from the date of first deployment of the
+Software and continues until terminated.
+
+  (a) Elite SACCO Mbarara may terminate this Licence at any time by
+      ceasing to use the Software and destroying all copies in its
+      possession, save for archival copies required by law or regulation.
+
+  (b) The Licensor may terminate this Licence immediately upon written
+      notice if Elite SACCO Mbarara breaches any term of this Licence and
+      fails to cure such breach within thirty (30) days of written notice.
+
+  (c) Upon termination, the grant of licence in Section 2 ceases, the
+      restrictions in Section 4 continue, and the open-source components
+      listed in Section 7 remain governed by their respective licences.
+
+===========================================================================
+  12. GOVERNING LAW & JURISDICTION
+===========================================================================
+
+This Licence is governed by the laws of the Republic of Uganda, without
+regard to its conflict-of-laws principles.
+
+Any dispute arising out of or relating to this Licence shall be
+submitted to the exclusive jurisdiction of the courts of Uganda, with the
+High Court of Uganda at Kampala as the court of first instance, save
+that either party may seek interim or injunctive relief in any court of
+competent jurisdiction to protect its intellectual property rights.
+
+===========================================================================
+  13. ENTIRE AGREEMENT & AMENDMENTS
+===========================================================================
+
+This Licence constitutes the entire agreement between the parties with
+respect to the Software and supersedes all prior or contemporaneous
+understandings, oral or written.
+
+No amendment or modification of this Licence is binding unless in
+writing and signed by an authorised representative of both Elite SACCO
+Mbarara and Gisha-Tech Innovations.
+
+===========================================================================
+  14. CONTACT
+===========================================================================
+
+For any question regarding this Licence, or to request permission for a
+use not permitted above, contact:
+
+  Elite SACCO Mbarara
+  Mbarara, Uganda
+  Email: admin@elitesacco.co.ug
+
+  Gisha-Tech Innovations
+  Developer of the Elite SACCO Mbarara web application
+  Email: hello@gisha-tech.example  (replace with current contact)
+
+===========================================================================
+
+END OF LICENCE
