@@ -1,0 +1,4 @@
+# Elite SACCO Mbarara - members-only system
+# Ask all crawlers not to crawl any part of the site
+User-agent: *
+Disallow: /
