@@ -1,0 +1,50 @@
+{
+  "name": "elite-sacco-mbarara",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Elite SACCO Mbarara — savings & credit cooperative management web app providing member registration, savings & loans tracking, portfolio-at-risk (PAR) analysis, member statements, and UMRA-style regulatory returns. Frontend loads its runtime libraries (jsPDF, AutoTable, pdf.js, SheetJS/xlsx) from cdnjs; the versions below are pinned here for reproducibility, upgrade tracking, and offline bundling.",
+  "keywords": [
+    "sacco",
+    "microfinance",
+    "mbarara",
+    "uganda",
+    "loans",
+    "savings",
+    "credit-cooperative",
+    "financial-services",
+    "elite-sacco",
+    "umra",
+    "par",
+    "portfolio-at-risk"
+  ],
+  "homepage": "./",
+  "license": "UNLICENSED",
+  "author": "Gisha-Tech Innovations <info@gisha-tech.com>",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "browserslist": [
+    ">0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead"
+  ],
+  "scripts": {
+    "start": "npx --yes serve -l 8080 .",
+    "serve": "npx --yes serve -l 8080 .",
+    "dev": "npx --yes serve -l 8080 .",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "outdated": "npm outdated",
+    "ls": "npm ls --depth=0",
+    "verify": "npm ci"
+  },
+  "dependencies": {
+    "jspdf": "2.5.1",
+    "jspdf-autotable": "3.8.2",
+    "pdfjs-dist": "3.11.174",
+    "xlsx": "0.18.5"
+  }
+}
