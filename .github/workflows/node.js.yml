@@ -15,19 +15,31 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [18.x, 20.x]
 
     steps:
+      - name: Checkout repository
       - uses: actions/checkout@v4
-
+      
+      - name: Set up Node.js ${{ matrix.node-version }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node-version }}
           cache: npm
+          cache-dependency-path: |
+           package-lock.json
+           server/package-lock.json
 
-      - run: npm install
-      - run: npm run build
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install server dependencies
+        run: npm --prefix server ci
+
+      - name: Run server tests
+        run: npm --prefix server test
 
       - name: Install root dependencies
         run: npm ci
