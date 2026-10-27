@@ -32,15 +32,16 @@
     "not dead"
   ],
   "scripts": {
-  "start": "node src/server.js",
-  "dev": "nodemon --watch src --watch migrations src/server.js",
-  "lint": "eslint src/ migrations/ scripts/ --ext .js,.mjs",
-  "lint:fix": "eslint src/ migrations/ scripts/ --ext .js,.mjs --fix",
-  "format": "prettier --write \"src/**/*.js\" \"scripts/**/*.js\" \"migrations/**/*.js\"",
-  "test": "jest --runInBand --forceExit --detectOpenHandles",
-  "test:watch": "jest --watch --runInBand",
-  "test:coverage": "jest --coverage --runInBand --forceExit --detectOpenHandles",
-  "test:e2e": "jest --config jest.e2e.config.js --runInBand --forceExit"
+  "start": "npx --yes serve -l 8080 .",
+  "serve": "npx --yes serve -l 8080 .",
+  "dev": "npx --yes serve -l 8080 .",
+  "audit": "npm audit",
+  "audit:fix": "npm audit fix",
+  "outdated": "npm outdated",
+  "ls": "npm ls --depth=0",
+  "verify": "npm ci && npm install --prefix server",
+  "test": "npm --prefix server test"
+}
 }
   },
   "dependencies": {
