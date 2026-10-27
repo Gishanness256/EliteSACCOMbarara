@@ -40,6 +40,7 @@
     "outdated": "npm outdated",
     "ls": "npm ls --depth=0",
     "verify": "npm ci"
+    "test": "cd server && npm test"
   },
   "dependencies": {
     "jspdf": "2.5.1",
