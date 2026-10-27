@@ -2,7 +2,7 @@
   "name": "elite-sacco-mbarara",
   "version": "1.0.0",
   "private": true,
-  "description": "Elite SACCO Mbarara — savings & credit cooperative management web app providing member registration, savings & loans tracking, portfolio-at-risk (PAR) analysis, member statement generation, loan servicing, financial reporting, KYC verification workflows, and a tamper-evident audit trail for governance and compliance.",
+  "description": "Elite SACCO Mbarara — savings & credit cooperative management web app providing member registration, savings & loans tracking, portfolio-at-risk (PAR) analysis, member statements, and financial reporting.",
   "keywords": [
     "sacco",
     "microfinance",
@@ -32,21 +32,20 @@
     "not dead"
   ],
   "scripts": {
-  "start": "npx --yes serve -l 8080 .",
-  "serve": "npx --yes serve -l 8080 .",
-  "dev": "npx --yes serve -l 8080 .",
-  "audit": "npm audit",
-  "audit:fix": "npm audit fix",
-  "outdated": "npm outdated",
-  "ls": "npm ls --depth=0",
-  "verify": "npm ci && npm install --prefix server",
-  "test": "npm --prefix server test"
-}
-}
+    "start": "npx --yes serve -l 8080 .",
+    "serve": "npx --yes serve -l 8080 .",
+    "dev": "npx --yes serve -l 8080 .",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "outdated": "npm outdated",
+    "ls": "npm ls --depth=0",
+    "verify": "npm ci && npm install --prefix server",
+    "test": "npm --prefix server test"
+  },
   "dependencies": {
     "jspdf": "2.5.1",
     "jspdf-autotable": "3.8.2",
     "pdfjs-dist": "3.11.174",
     "xlsx": "0.18.5"
   }
-
+}
