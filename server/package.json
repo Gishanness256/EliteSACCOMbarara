@@ -20,7 +20,8 @@
     "test": "jest --runInBand --forceExit --detectOpenHandles",
     "test:watch": "jest --watch --runInBand",
     "test:coverage": "jest --coverage --runInBand --forceExit --detectOpenHandles",
-    "test:e2e": "jest --config jest.e2e.config.js --runInBand --forceExit",
+    "test:e2e": "jest --config jest.e2e.config.js --runInBand --forceExit"
+  }
 
     "db:migrate": "node scripts/migrate.js up",
     "db:migrate:up": "node scripts/migrate.js up",
