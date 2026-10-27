@@ -43,11 +43,10 @@
   "test": "npm --prefix server test"
 }
 }
-  },
   "dependencies": {
     "jspdf": "2.5.1",
     "jspdf-autotable": "3.8.2",
     "pdfjs-dist": "3.11.174",
     "xlsx": "0.18.5"
   }
-}
+
