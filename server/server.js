@@ -173,27 +173,70 @@ function query(text, params) {
 
 // --- Express app ---------------------------------------------------------
 const express = require('express');
-const helmet = require('helmet');
 const cors = require('cors');
-const compression = require('compression');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-const createError = require('http-errors');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
+const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+const rootDir = path.join(__dirname, '..');
+const dataDir = path.join(__dirname, 'data');
+const dbPath = path.join(dataDir, 'elite_sacco.db');
+
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const db = new sqlite3.Database(dbPath);
+
+function ensureDatabase() {
+  return new Promise((resolve, reject) => {
+    db.serialize(() => {
+      db.run(`
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          first_name TEXT NOT NULL,
+          last_name TEXT NOT NULL,
+          address TEXT NOT NULL,
+          phone TEXT NOT NULL UNIQUE,
+          email TEXT UNIQUE,
+          nin TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          role TEXT NOT NULL DEFAULT 'member',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `, (err) => {
+        if (err) return reject(err);
+
+        const adminEmail = 'admin@elitesacco.co.ug';
+        const adminPhone = '+256700000000';
+        const adminPassword = 'Admin';
+        const adminHash = bcrypt.hashSync(adminPassword, 10);
+
+        db.run(
+          `INSERT OR IGNORE INTO users
+           (first_name, last_name, address, phone, email, nin, password_hash, role)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          ['System', 'Admin', 'Head Office', adminPhone, adminEmail, 'NINADMIN000', adminHash, 'Admin'],
+          (insertErr) => {
+            if (insertErr) return reject(insertErr);
+            resolve();
+          }
 
 // Trust the first proxy (so req.ip and X-Forwarded-* are honored behind nginx/LB)
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
 // --- Security & middleware stack ----------------------------------------
-app.use(helmet({
-  contentSecurityPolicy: false,  // API only — no inline scripts to protect
-  crossOriginEmbedPolicy: false,
-}));
 app.use(cors({
   origin(origin, cb) {
     // Allow same-origin / curl (no origin) and any whitelisted origin
