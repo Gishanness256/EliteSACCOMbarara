@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Elite SACCO Mbarara</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./public/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./public/icons/icon-192.png" />
   <style>
     :root {
       --blue: #1b3c91;
@@ -46,6 +49,13 @@
     .brand-mark {
       width: 42px; height: 42px; border-radius: 10px; background: var(--white); color: var(--blue);
       display: grid; place-items: center; font-size: 1.2rem; font-weight: 900;
+      overflow: hidden;
+    }
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     nav { display: flex; gap: 0.4rem; flex-wrap: wrap; }
@@ -68,6 +78,14 @@
     .logo-badge {
       width: 180px; height: 80px; border-radius: 18px; background: linear-gradient(135deg, var(--blue-soft), #cfe0ff);
       display: grid; place-items: center; color: var(--blue); font-weight: 900; font-size: 1.7rem; letter-spacing: 0.06em;
+      overflow: hidden;
+    }
+    .logo-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      padding: 0.45rem;
     }
 
     h1, h2 { margin: 0 0 1rem; font-size: 1.7rem; text-align: center; color: var(--blue); }
@@ -172,7 +190,9 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark">E</div>
+      <div class="brand-mark">
+        <img src="./public/icons/icon-192.png" alt="Elite SACCO Mbarara logo" />
+      </div>
       <span>Elite SACCO Mbarara</span>
     </div>
     <nav aria-label="Main navigation">
@@ -184,7 +204,11 @@
 
   <main>
     <section class="card" aria-label="Login section">
-      <div class="logo"><div class="logo-badge">ELITE</div></div>
+      <div class="logo">
+        <div class="logo-badge">
+          <img src="./public/icons/icon-512.png" alt="Elite SACCO Mbarara logo" />
+        </div>
+      </div>
       <h1>Login</h1>
       <form id="loginForm" novalidate>
         <label for="userId">Email or phone number</label>
@@ -413,8 +437,8 @@
         });
       } else {
         const memberName = currentUser.name || `${currentUser.first || ''} ${currentUser.last || ''}`.trim() || 'Member';
-        const userSavings = (S.savings || []).filter((item) => normalizeText(item.user || item.email || '') === normalizeEmail(currentUser.email || '') || normalizePhone(item.phone || '') === normalizePhone(currentUser.phone || '') || normalizeText(item.member || '') === normalizeText(currentUser.name || '')).reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const memberLoans = (S.loans || []).filter((item) => normalizeText(item.user || item.email || '') === normalizeEmail(currentUser.email || '') || normalizePhone(item.phone || '') === normalizePhone(currentUser.phone || '') || normalizeText(item.member || '') === normalizeText(currentUser.name || '')).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const userSavings = (S.savings || []).filter((item) => normalizeText(item.user || item.email || '') === normalizeEmail(currentUser.email || '') || normalizePhone(item.phone || '') === normalizePhone(currentUser.phone || '')).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const memberLoans = (S.loans || []).filter((item) => normalizeText(item.user || item.email || '') === normalizeEmail(currentUser.email || '') || normalizePhone(item.phone || '') === normalizePhone(currentUser.phone || '')).reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
         dashboardContent.innerHTML = `
           <div class="section-box">
