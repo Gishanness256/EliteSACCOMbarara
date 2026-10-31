@@ -1,2 +1,6 @@
 cd /path/to/EliteSACCOMbarara
 npm install
+npm install --save-dev serve@14.2.4
+git add package-lock.json
+git commit -m "chore: sync lockfile"
+git push
