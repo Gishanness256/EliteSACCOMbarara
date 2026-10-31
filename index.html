@@ -313,17 +313,49 @@ const dlg=document.getElementById('regmodal');
 document.getElementById('openReg').addEventListener('click',e=>{e.preventDefault();dlg.showModal();});
 document.getElementById('closeReg').addEventListener('click',()=>dlg.close());
 dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+const normalizeEmail = v => String(v || '').trim().toLowerCase();
+const normalizePhone = v => String(v || '').replace(/[^0-9+]/g, '');
+
 const rf=document.getElementById('regform');
 rf.addEventListener('submit',e=>{
   e.preventDefault();
   const m=document.getElementById('pwmsg');m.textContent='';
   if(!rf.checkValidity()){rf.reportValidity();return;}
   if(rf.pw1.value!==rf.pw2.value){m.textContent='Passwords do not match.';rf.pw2.focus();return;}
-  alert('Account details captured. Connect this form to your backend to complete registration.');dlg.close();
+
+  const first=rf.fn.value.trim();
+  const last=rf.ln.value.trim();
+  const email=rf.em.value.trim();
+  const phone=rf.ph.value.trim();
+  const nin=rf.nin.value.trim().toUpperCase();
+
+  const exists = S.users.some(u =>
+    (u.email && normalizeEmail(u.email) === normalizeEmail(email)) ||
+    (u.phone && normalizePhone(u.phone) === normalizePhone(phone)) ||
+    (u.nin && String(u.nin).toUpperCase() === nin)
+  );
+
+  if(exists){
+    m.textContent='An account with this email, phone, or NIN already exists.';
+    return;
+  }
+
+  S.users.push({
+    name: `${first} ${last}`.trim(),
+    first,
+    last,
+    email,
+    phone,
+    nin,
+    role:'Member',
+    pw:rf.pw1.value
+  });
+
+  save();
+  alert('Account created successfully. You can now log in.');
+  rf.reset();
+  dlg.close();
 });
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
@@ -332,8 +364,33 @@ const $=s=>document.querySelector(s),V=$('#view'),fmt=n=>'UGX '+Math.round(n||0)
 const PERMS=['Approve loans','Acknowledge savings/deposits','Acknowledge loan repayments','Set interest rates','Create/remove system users','Create/remove member accounts','Weekly reports','Monthly reports'];
 const ROLES=['Admin','Treasurer','Credit Supervisor','Credit Officer'];
 const dflt=()=>{const r={};ROLES.forEach((x,i)=>r[x]=PERMS.map((_,j)=>x=='Admin'||(x=='Treasurer'&&[1,2,6,7].includes(j))||(x=='Credit Supervisor'&&[0,2,3,6,7].includes(j))||(x=='Credit Officer'&&[1,2,3,6].includes(j))));return r;};
-let S={users:[{name:'System Admin',email:'admin@elitesacco.co.ug',role:'Admin'}],members:[],savings:[],loans:[],roles:dflt(),seq:0,non:[]};
-try{const x=localStorage.getItem('esacco');if(x)S=JSON.parse(x)}catch(e){}S.non=S.non||[];S.reqs=S.reqs||[];S.lseq=S.lseq||0;S.audit=S.audit||[];S.sseq=S.sseq||0;
+let S={
+  users:[
+    {name:'System Admin',email:'admin@elitesacco.co.ug',phone:'+256700000000',role:'Admin',pw:'Admin123!'}
+  ],
+  members:[],
+  savings:[],
+  loans:[],
+  roles:dflt(),
+  seq:0,
+  non:[]
+};
+
+try{
+  const x=localStorage.getItem('esacco');
+  if(x){
+    const saved=JSON.parse(x);
+    S = Object.assign({}, S, saved);
+  }
+}catch(e){}
+
+S.users = Array.isArray(S.users) ? S.users : [{name:'System Admin',email:'admin@elitesacco.co.ug',phone:'+256700000000',role:'Admin',pw:'Admin123!'}];
+S.non=S.non||[];
+S.reqs=S.reqs||[];
+S.lseq=S.lseq||0;
+S.audit=S.audit||[];
+S.sseq=S.sseq||0;
+
 const save=()=>{try{localStorage.setItem('esacco',JSON.stringify(S))}catch(e){}};
 const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const mem=a=>S.members.find(m=>m.acc==a);
@@ -343,8 +400,41 @@ const audit=(act,part,u)=>{u=u||cu;(S.audit=S.audit||[]).push({t:new Date().toIS
 const who=l=>{const m=mem(l.acc);if(m)return{acc:m.acc,name:m.first+' '+m.last,nm:0};const n=S.non.find(x=>x.id==l.nid);return{acc:'',name:n?n.name:'Unknown',nm:1}};
 const nmv=w=>w.nm?`<i>${esc(w.name)}</i>`:esc(w.name);
 const mopts=()=>S.members.map(m=>`<option value="${m.acc}">${m.acc} — ${esc(m.first)} ${esc(m.last)}</option>`).join('');
-const f=$('#login form');f.onsubmit=e=>{e.preventDefault();const id=f.querySelector('[name=id]').value.trim().toLowerCase(),pw=f.querySelector('[name=pw]').value;let m=$('#lerr');if(!m){m=document.createElement('div');m.id='lerr';m.className='msg err';document.querySelector('#login').appendChild(m)};const u=S.users.find(x=>(x.email.toLowerCase()==id||x.email.toLowerCase()==id+'@elitesacco.co.ug')&&(x.pw?x.pw==pw:(x.role=='Admin'&&pw=='Admin')));if(u){cu=u;audit('Login','Signed in successfully');document.body.classList.add('in');m.textContent='';R.home();}else{m.textContent='Invalid login details.';}};
-$('#logout').onclick=()=>{audit('Logout','Signed out');document.body.classList.remove('in','blank');pinReset();f.reset()};
+const f=$('#login form');
+f.onsubmit=e=>{
+  e.preventDefault();
+
+  const id=f.querySelector('[name=id]').value.trim();
+  const pw=f.querySelector('[name=pw]').value;
+  const key=normalizeEmail(id);
+  const phone=normalizePhone(id);
+
+  let m=$('#lerr');
+  if(!m){
+    m=document.createElement('div');
+    m.id='lerr';
+    m.className='msg err';
+    document.querySelector('#login').appendChild(m);
+  }
+
+  const u=S.users.find(x=>{
+    const emailMatch = normalizeEmail(x.email) === key || normalizeEmail(x.email) === `${key}@elitesacco.co.ug`;
+    const phoneMatch = normalizePhone(x.phone || '') === phone;
+    const passwordMatch = String(x.pw || '') === String(pw);
+
+    return (emailMatch || phoneMatch) && passwordMatch;
+  });
+
+  if(u){
+    cu=u;
+    audit('Login','Signed in successfully');
+    document.body.classList.add('in');
+    m.textContent='';
+    R.home();
+  }else{
+    m.textContent='Invalid login details.';
+  }
+};
 $('#side').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.sub){const s=$('#side');$('#'+b.dataset.sub).classList.toggle('show');if(s.classList.contains('manual')){if(!s.classList.contains('pin')){s.classList.add('pin');document.body.classList.add('pinned')}}} else if(b.dataset.v){go(b.dataset.v);if(matchMedia('(hover:none)').matches)$('#side').classList.remove('open')}});
 const pinReset=()=>{const s=$('#side');s.classList.remove('manual','pin');document.body.classList.remove('pinned');$('#pinBtn').setAttribute('aria-expanded','false');$('#pinTx').textContent='Hide dashboard';};
 $('#pinBtn').onclick=()=>{const s=$('#side'),show=!(s.classList.contains('pin')||(!s.classList.contains('manual')&&(s.matches(':hover')||s.classList.contains('open'))));s.classList.add('manual');s.classList.remove('open');s.classList.toggle('pin',show);document.body.classList.toggle('pinned',show);$('#pinBtn').setAttribute('aria-expanded',show);$('#pinTx').textContent=show?'Hide dashboard':'Show dashboard';};
