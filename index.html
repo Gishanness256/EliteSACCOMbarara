@@ -13,6 +13,7 @@
       --line: #d5ddf2;
       --white: #fff;
       --red: #d62828;
+      --green: #0a7a3b;
       --font: "Manrope", "Segoe UI", Arial, sans-serif;
     }
 
@@ -116,7 +117,7 @@
       letter-spacing: 0.06em;
     }
 
-    h1 {
+    h1, h2 {
       margin: 0 0 1rem;
       font-size: 1.7rem;
       text-align: center;
@@ -161,6 +162,14 @@
       box-shadow: 0 14px 26px -10px rgba(27,60,145,0.7);
     }
 
+    .btn.secondary {
+      background: #fff;
+      color: var(--blue);
+      border: 1.5px solid var(--blue);
+      box-shadow: none;
+      margin-top: 0.9rem;
+    }
+
     .alt {
       margin-top: 1rem;
       text-align: center;
@@ -180,7 +189,7 @@
       min-height: 1.2em;
       font-weight: 700;
       font-size: 0.82rem;
-      color: #0a7a3b;
+      color: var(--green);
     }
 
     .msg.err {
@@ -231,6 +240,7 @@
       margin: 0;
       color: var(--blue);
       font-size: 1.55rem;
+      text-align: left;
     }
 
     .logout {
@@ -267,11 +277,75 @@
       font-size: 1.45rem;
     }
 
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 26, 74, 0.6);
+      padding: 1rem;
+      z-index: 20;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-panel {
+      width: min(100%, 620px);
+      max-height: 90vh;
+      overflow: auto;
+      background: var(--white);
+      border-radius: 24px;
+      padding: 1.5rem 1.4rem;
+      box-shadow: 0 40px 80px -20px rgba(5,15,50,0.7);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      text-align: left;
+    }
+
+    .close-btn {
+      border: 0;
+      background: var(--blue-soft);
+      color: var(--blue);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font: 700 1.5rem var(--font);
+      cursor: pointer;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem 1rem;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    .required {
+      color: var(--red);
+      font-weight: 800;
+    }
+
     @media (max-width: 520px) {
       .card { padding: 1.5rem 1.2rem 1.7rem; }
       .topbar { justify-content: center; }
       nav { justify-content: center; }
       .dash-shell { padding: 1rem; }
+      .two-col { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -309,6 +383,53 @@
     </section>
   </main>
 
+  <div id="regModal" class="modal" aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="regTitle">
+      <div class="modal-header">
+        <h2 id="regTitle">Create Account</h2>
+        <button class="close-btn" id="closeReg" type="button" aria-label="Close registration">&times;</button>
+      </div>
+
+      <form id="registerForm" novalidate>
+        <div class="two-col">
+          <div>
+            <label for="firstName">First Name <span class="required">*</span></label>
+            <input id="firstName" name="firstName" type="text" required />
+          </div>
+
+          <div>
+            <label for="lastName">Last Name <span class="required">*</span></label>
+            <input id="lastName" name="lastName" type="text" required />
+          </div>
+
+          <div class="full">
+            <label for="regPhone">Phone <span class="required">*</span></label>
+            <input id="regPhone" name="phone" type="tel" autocomplete="tel" required />
+          </div>
+
+          <div class="full">
+            <label for="regEmail">Email</label>
+            <input id="regEmail" name="email" type="email" autocomplete="email" />
+          </div>
+
+          <div>
+            <label for="regPassword">Password <span class="required">*</span></label>
+            <input id="regPassword" name="password" type="password" minlength="6" autocomplete="new-password" required />
+          </div>
+
+          <div>
+            <label for="regConfirmPassword">Confirm Password <span class="required">*</span></label>
+            <input id="regConfirmPassword" name="confirmPassword" type="password" minlength="6" autocomplete="new-password" required />
+          </div>
+        </div>
+
+        <div id="regMsg" class="msg" aria-live="polite"></div>
+        <button class="btn" type="submit">Create Account</button>
+        <button class="btn secondary" type="button" id="cancelReg">Cancel</button>
+      </form>
+    </div>
+  </div>
+
   <section class="dashboard" aria-live="polite">
     <div class="dash-shell">
       <div class="dash-top">
@@ -325,6 +446,7 @@
   </section>
 
   <script>
+    const STORAGE_KEY = 'esacco';
     const DEFAULT_ADMIN = {
       name: 'System Admin',
       email: 'admin@elitesacco.co.ug',
@@ -335,66 +457,144 @@
 
     const normalizeEmail = (v) => String(v || '').trim().toLowerCase();
     const normalizePhone = (v) => String(v || '').replace(/[^0-9+]/g, '');
+    const normalizeText = (v) => String(v || '').trim();
+
+    const emptyState = () => ({
+      users: [{ ...DEFAULT_ADMIN }],
+      members: [],
+      savings: [],
+      loans: [],
+      audit: []
+    });
+
+    const isAdminUser = (user) => {
+      const email = normalizeEmail(user?.email || '');
+      const phone = normalizePhone(user?.phone || '');
+      const name = normalizeText(user?.name || '').toLowerCase();
+      return email === normalizeEmail(DEFAULT_ADMIN.email)
+        || phone === normalizePhone(DEFAULT_ADMIN.phone)
+        || name.includes('system admin');
+    };
+
+    const sanitizeUserRecord = (user) => {
+      if (!user || typeof user !== 'object') return null;
+      const name = normalizeText(user.name || `${user.first || ''} ${user.last || ''}`.trim());
+      const email = normalizeEmail(user.email || '');
+      const phone = normalizePhone(user.phone || '');
+      const pw = String(user.pw || user.password || '');
+      if (!name && !email && !phone && !pw) return null;
+      return {
+        name,
+        first: normalizeText(user.first || ''),
+        last: normalizeText(user.last || ''),
+        email,
+        phone,
+        role: user.role || 'Member',
+        pw,
+        nin: normalizeText(user.nin || '')
+      };
+    };
 
     const loadState = () => {
-      const base = { users: [DEFAULT_ADMIN], members: [], savings: [], loans: [], audit: [] };
+      const base = emptyState();
       try {
-        const raw = localStorage.getItem('esacco');
+        const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return base;
         const saved = JSON.parse(raw);
         if (!saved || typeof saved !== 'object') return base;
-        return { ...base, ...saved };
+
+        const users = Array.isArray(saved.users)
+          ? saved.users.map(sanitizeUserRecord).filter(Boolean)
+          : [...base.users];
+
+        const safeUsers = users.length ? users : [...base.users];
+        if (!safeUsers.some(isAdminUser)) safeUsers.unshift({ ...DEFAULT_ADMIN });
+
+        return {
+          ...base,
+          ...saved,
+          users: safeUsers
+        };
       } catch (e) {
         return base;
       }
     };
 
     let S = loadState();
-    S.users = Array.isArray(S.users) && S.users.length ? S.users : [DEFAULT_ADMIN];
+
+    const persistState = () => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(S));
+      } catch (e) {
+        // Ignore storage errors.
+      }
+    };
 
     const ensureDefaultAdmin = () => {
-      const hasAdmin = S.users.some((u) => {
-        const sameEmail = normalizeEmail(u.email || '') === normalizeEmail(DEFAULT_ADMIN.email);
-        const samePhone = normalizePhone(u.phone || '') === normalizePhone(DEFAULT_ADMIN.phone);
-        const sameName = (u.name || '').toLowerCase().includes('system admin');
-        return sameEmail || samePhone || sameName;
-      });
-
-      if (!hasAdmin) {
+      if (!S.users || !Array.isArray(S.users)) {
+        S.users = [{ ...DEFAULT_ADMIN }];
+      }
+      if (!S.users.some(isAdminUser)) {
+        S.users.unshift({ ...DEFAULT_ADMIN });
+      }
+      S.users = S.users.map(sanitizeUserRecord).filter(Boolean);
+      if (!S.users.some(isAdminUser)) {
         S.users.unshift({ ...DEFAULT_ADMIN });
       }
     };
 
     ensureDefaultAdmin();
 
-    const saveState = () => {
-      try {
-        localStorage.setItem('esacco', JSON.stringify(S));
-      } catch (e) {
-        // Ignore storage errors.
-      }
-    };
-
     const loginForm = document.getElementById('loginForm');
     const loginMsg = document.getElementById('loginMsg');
+    const regModal = document.getElementById('regModal');
+    const registerForm = document.getElementById('registerForm');
+    const regMsg = document.getElementById('regMsg');
 
-    const getSessionUser = (id, pw) => {
-      const rawId = String(id || '').trim();
+    const openRegModal = () => {
+      regModal.classList.add('open');
+      regModal.setAttribute('aria-hidden', 'false');
+      registerForm.reset();
+      regMsg.textContent = '';
+      regMsg.classList.remove('err');
+    };
+
+    const closeRegModal = () => {
+      regModal.classList.remove('open');
+      regModal.setAttribute('aria-hidden', 'true');
+      registerForm.reset();
+      regMsg.textContent = '';
+      regMsg.classList.remove('err');
+    };
+
+    document.getElementById('openReg').addEventListener('click', (event) => {
+      event.preventDefault();
+      openRegModal();
+    });
+
+    document.getElementById('closeReg').addEventListener('click', closeRegModal);
+    document.getElementById('cancelReg').addEventListener('click', closeRegModal);
+    regModal.addEventListener('click', (event) => {
+      if (event.target === regModal) closeRegModal();
+    });
+
+    const getUserByLogin = (id, password) => {
+      const rawId = normalizeText(id);
       const key = normalizeEmail(rawId);
-      const shortKey = key.replace(/@elitesacco\.co\.ug$/, '');
       const phone = normalizePhone(rawId);
+      const shortKey = key.replace(/@elitesacco\.co\.ug$/, '');
 
       return S.users.find((user) => {
-        const email = normalizeEmail(user.email || '');
+        const userEmail = normalizeEmail(user.email || '');
         const userPhone = normalizePhone(user.phone || '');
-        const passwordMatch = String(user.pw || '') === String(pw || '');
-        const emailMatch =
-          email === key ||
-          email === `${shortKey}@elitesacco.co.ug` ||
-          email === `${key}@elitesacco.co.ug` ||
+        const pwMatch = String(user.pw || '') === String(password || '');
+        const emailMatches =
+          userEmail === key ||
+          userEmail === `${shortKey}@elitesacco.co.ug` ||
+          userEmail === `${key}@elitesacco.co.ug` ||
           normalizeEmail(user.name || '') === key;
-        const phoneMatch = userPhone === phone;
-        return (emailMatch || phoneMatch) && passwordMatch;
+        const phoneMatches = userPhone === phone;
+        return (emailMatches || phoneMatches) && pwMatch;
       });
     };
 
@@ -403,7 +603,7 @@
       const id = document.getElementById('userId').value;
       const pw = document.getElementById('password').value;
 
-      const user = getSessionUser(id, pw);
+      const user = getUserByLogin(id, pw);
       if (!user) {
         loginMsg.textContent = 'Invalid login details.';
         loginMsg.classList.add('err');
@@ -413,7 +613,70 @@
       loginMsg.textContent = '';
       loginMsg.classList.remove('err');
       document.body.classList.add('logged-in');
-      saveState();
+      persistState();
+    });
+
+    registerForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const first = normalizeText(form.firstName.value);
+      const last = normalizeText(form.lastName.value);
+      const phone = normalizePhone(form.phone.value);
+      const email = normalizeEmail(form.email.value);
+      const password = String(form.password.value || '');
+      const confirmPassword = String(form.confirmPassword.value || '');
+
+      regMsg.textContent = '';
+      regMsg.classList.remove('err');
+
+      if (!first || !last || !phone || !password || !confirmPassword) {
+        regMsg.textContent = 'Please complete all required fields.';
+        regMsg.classList.add('err');
+        return;
+      }
+
+      if (password.length < 6) {
+        regMsg.textContent = 'Password must be at least 6 characters long.';
+        regMsg.classList.add('err');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        regMsg.textContent = 'Passwords do not match.';
+        regMsg.classList.add('err');
+        return;
+      }
+
+      const duplicateUser = S.users.some((user) => {
+        const sameEmail = email && normalizeEmail(user.email || '') === email;
+        const samePhone = phone && normalizePhone(user.phone || '') === phone;
+        return sameEmail || samePhone;
+      });
+
+      if (duplicateUser) {
+        regMsg.textContent = 'An account with this email or phone already exists.';
+        regMsg.classList.add('err');
+        return;
+      }
+
+      const newUser = {
+        name: `${first} ${last}`.trim(),
+        first,
+        last,
+        email,
+        phone,
+        role: 'Member',
+        pw: password
+      };
+
+      S.users = [...S.users, newUser];
+      ensureDefaultAdmin();
+      persistState();
+
+      regMsg.textContent = 'Account created successfully. You can now log in.';
+      regMsg.classList.remove('err');
+      form.reset();
+      setTimeout(() => closeRegModal(), 1100);
     });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -423,20 +686,19 @@
       loginMsg.classList.remove('err');
     });
 
-    document.getElementById('openReg').addEventListener('click', (event) => {
-      event.preventDefault();
-      alert('Use the default admin login: admin@elitesacco.co.ug / Admin123!');
-    });
-
     const memberCount = document.getElementById('memberCount');
     const loanBook = document.getElementById('loanBook');
     const savingsTotal = document.getElementById('savingsTotal');
-
     const formatCurrency = (value) => 'UGX ' + Number(value || 0).toLocaleString();
 
-    memberCount.textContent = String(S.members.length || 0);
-    loanBook.textContent = formatCurrency((S.loans || []).reduce((sum, loan) => sum + Number(loan.amount || 0), 0));
-    savingsTotal.textContent = formatCurrency((S.savings || []).reduce((sum, saving) => sum + Number(saving.amount || 0), 0));
+    const updateDashboard = () => {
+      const memberUsers = S.users.filter((user) => !isAdminUser(user));
+      memberCount.textContent = String(memberUsers.length);
+      loanBook.textContent = formatCurrency((S.loans || []).reduce((sum, loan) => sum + Number(loan.amount || 0), 0));
+      savingsTotal.textContent = formatCurrency((S.savings || []).reduce((sum, saving) => sum + Number(saving.amount || 0), 0));
+    };
+
+    updateDashboard();
   </script>
 </body>
 </html>
