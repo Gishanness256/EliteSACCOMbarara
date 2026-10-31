@@ -24,7 +24,6 @@ body{
   background-attachment:fixed;
   position:relative;overflow-x:hidden;
 }
-/* soft shield-shaped ornaments echoing the logo */
 body::before,body::after{
   content:"";position:fixed;z-index:0;pointer-events:none;
   background:rgba(255,255,255,.045);
@@ -109,7 +108,7 @@ input:focus{outline:none;background:var(--white);border-color:var(--blue);box-sh
 .alt a{color:var(--blue);font-weight:800;text-decoration:none;border-bottom:2px solid var(--blue-mid)}
 .alt a:hover{border-bottom-color:var(--blue)}
 .alt a:focus-visible{outline:3px solid #A9BBF0;outline-offset:3px;border-radius:4px}
-/* picture-in-picture registration window */
+
 dialog#regmodal{
   border:0;padding:0;background:transparent;color:var(--blue-ink);
   width:min(640px,calc(100% - 1.5rem));max-height:calc(100dvh - 1.5rem);margin:auto;overflow:visible;
@@ -140,6 +139,7 @@ footer{
   .panel{padding:1.6rem}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
 #dash{display:none;min-height:100vh;position:relative;z-index:3;background:#F3F6FD;color:var(--blue-ink)}
 body.in{background:#F3F6FD;display:block}body.in::before,body.in::after{display:none}
 body.in>header,body.in>main{display:none}body.in #dash{display:block}
@@ -147,7 +147,7 @@ body.in>header,body.in>main{display:none}body.in #dash{display:block}
 #side:hover,#side.open{width:250px}
 #side .top{display:flex;align-items:center;gap:.8rem;padding:.9rem 1rem;border-bottom:1px solid rgba(255,255,255,.15);white-space:nowrap}
 #side .top img{height:36px;border-radius:8px;background:#fff;padding:2px}
-#side button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:1rem;width:100%;padding:.85rem 1.35rem;cursor:pointer;white-space:nowrap;font:600 .92rem var(--font);color:rgba(255,255,255,.85)}
+#side button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:1rem;width:100%;padding:.85rem 1.35rem;cursor:pointer;white-space:nowrap;font:600 .92rem var(--font);color:rgba(255,255,255,.82)}
 #side button:hover,#side button.on{background:rgba(255,255,255,.14);color:#fff}
 #side button:focus-visible{outline:2px solid #A9BBF0;outline-offset:-2px}
 #side i{font-style:normal;font-size:1.25rem;width:26px;text-align:center;flex:none}
@@ -189,20 +189,19 @@ body.blank .wrap>.bar,body.blank #view{display:none}
 body.blank #wm{display:flex}#wm img{width:min(62vw,600px);opacity:.09}#side .top{cursor:pointer}#side .top:focus-visible{outline:2px solid #A9BBF0}
 
 @media print{body *{visibility:hidden}#rep,#rep *{visibility:visible}#rep{position:absolute;left:0;top:0;width:100%}.noprint{display:none!important}}
-.bd{border-radius:99px;padding:.15rem .6rem;font-weight:700;font-size:.78rem;display:inline-block}.bd.ok{background:#DDF4E6;color:#0a7a3b}.bd.no{background:#FDE3E3;color:#D62828}.bd.hold{background:#FDE9C1;color:#9B5E00}.bd.pen{background:var(--blue-soft);color:var(--blue)}
-.chk{color:#0a7a3b;font-weight:800;font-size:1.2rem}#dash .btn.sm{margin:0 .2rem 0 0;padding:.35rem .8rem;font-size:.8rem}
+.bd{border-radius:99px;padding:.15rem .6rem;font-weight:700;font-size:.78rem;display:inline-block}.bd.ok{background:#DDF4E6;color:#0a7a3b}.bd.no{background:#FDE3E3;color:#D62828}.bd.hold{background:#F9E9C7;color:#7c5d00}.chk{color:#0a7a3b;font-weight:800;font-size:1.2rem}#dash .btn.sm{margin:0 .2rem 0 0;padding:.35rem .8rem;font-size:.8rem}
 </style>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Elite SACCO Mbarara</title>
 
   <link rel="icon" type="image/png" href="favicon.png">
-  <!-- or -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
 <header>
-  <div class="brand"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEA/9k=">Elite SACCO Mbarara</div>
+  <div class="brand"><img alt="Elite SACCO" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ=="></div>
   <nav role="tablist" aria-label="Main">
     <button role="tab" data-tab="login" aria-selected="true">Login</button>
     <button role="tab" data-tab="about" aria-selected="false">About Us</button>
@@ -212,7 +211,7 @@ body.blank #wm{display:flex}#wm img{width:min(62vw,600px);opacity:.09}#side .top
 
 <main>
   <section id="login">
-    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEA/9k=">
+    <img alt="Elite SACCO" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ==">
     <form>
       <h1>Login</h1>
       <label for="id">Email or phone number</label>
@@ -224,12 +223,14 @@ body.blank #wm{display:flex}#wm img{width:min(62vw,600px);opacity:.09}#side .top
       <p class="alt" style="margin-top:.5rem;font-size:.82rem">Forgot your password or login handle? Contact the System Admin to reset it.</p>
     </form>
   </section>
+
   <section id="about" class="panel" hidden>
     <h2>About Us</h2>
-    <p><strong>Elite SACCO Mbarara</strong> (Formerly Obwesigwa Financial Services) is your trusted partner for financial growth, offering affordable loans, secure savings, and fast, friendly service to members and clients across the region.</p>
+    <p><strong>Elite SACCO Mbarara</strong> (Formerly Obwesigwa Financial Services) is your trusted partner for financial growth, offering affordable loans, secure savings, and fast, friendly service.</p>
     <p>Whether you're looking to grow your business, save for the future, or access quick credit, Elite SACCO is here to support you every step of the way.</p>
     <div class="tagline">&ldquo;ELITE SACCO MBARARA, GUARANTEED SUCCESS&rdquo;</div>
   </section>
+
   <section id="services" class="panel" hidden>
     <h2>Services</h2>
     <h3>Our Loan Products</h3>
@@ -282,52 +283,151 @@ body.blank #wm{display:flex}#wm img{width:min(62vw,600px);opacity:.09}#side .top
 <footer>&copy; 2026 Elite SACCO Mbarara. All rights reserved.<br>Developed by Gisha-Tech Innovations</footer>
 
 <div id="dash">
-<aside id="side" aria-label="Dashboard menu">
- <div class="top" role="button" tabindex="0" title="Click to hide / show the dashboard" aria-label="Hide or show dashboard"><img id="sbLogo" alt="Elite SACCO"><b>Elite SACCO</b></div>
- <button id="pinBtn" aria-expanded="false" title="Hide the dashboard"><i>☰</i><span id="pinTx">Hide dashboard</span></button>
- <button data-sub="cfg"><i>⚙️</i>Configurations<span class="car">▼</span></button>
- <div class="sub" id="cfg"><button data-v="users">Users</button><button data-v="access">Access Levels</button></div>
- <button data-v="members"><i>👤</i>Members</button>
- <button data-sub="svm"><i>💰</i>Savings<span class="car">▼</span></button>
- <div class="sub" id="svm"><button data-v="sdep">Deposits/Withdrawals</button><button data-v="sacc">Accounts</button></div>
- <button data-sub="lnm" id="lnmBtn"><i>🏦</i>Loans<span class="car">▼</span></button>
- <div class="sub" id="lnm"><button data-v="lreq">Loan Requests</button><button data-v="lapp">Loan Approval</button><button data-v="lsec">Loans Section</button></div>
- <button data-sub="pfm"><i>📒</i>Portfolio<span class="car">▼</span></button>
- <div class="sub" id="pfm"><button data-v="ledger">Ledger</button><button data-v="liquidity">Liquidity</button></div>
- <button data-sub="rpm"><i>📊</i>Reports<span class="car">▼</span></button>
- <div class="sub" id="rpm"><button data-v="reports">Statements</button><button data-v="regrep">Auditing</button></div>
- <button data-v="audit"><i>🛡️</i>System Auditor</button>
- <button class="out" id="logout"><i>⎋</i>Logout</button>
-</aside>
-<div id="wm"><img id="wmLogo" alt=""></div>
-<div class="wrap"><div class="bar"><div><h2 id="vt">Welcome</h2><small id="who">Signed in as admin@elitesacco.co.ug · Admin</small></div></div><div id="view"></div></div>
+  <aside id="side" aria-label="Dashboard menu">
+    <div class="top" role="button" tabindex="0" title="Click to hide / show the dashboard" aria-label="Hide or show dashboard"><img id="sbLogo" alt="Elite SACCO"><b>Elite SACCO</b></div>
+    <button id="pinBtn" aria-expanded="false" title="Hide the dashboard"><i>☰</i><span id="pinTx">Hide dashboard</span></button>
+    <button data-sub="cfg"><i>⚙️</i>Configurations<span class="car">▼</span></button>
+    <div class="sub" id="cfg"><button data-v="users">Users</button><button data-v="access">Access Levels</button></div>
+    <button data-v="members"><i>👤</i>Members</button>
+    <button data-sub="svm"><i>💰</i>Savings<span class="car">▼</span></button>
+    <div class="sub" id="svm"><button data-v="sdep">Deposits/Withdrawals</button><button data-v="sacc">Accounts</button></div>
+    <button data-sub="lnm" id="lnmBtn"><i>🏦</i>Loans<span class="car">▼</span></button>
+    <div class="sub" id="lnm"><button data-v="lreq">Loan Requests</button><button data-v="lapp">Loan Approval</button><button data-v="lsec">Loans Section</button></div>
+    <button data-sub="pfm"><i>📒</i>Portfolio<span class="car">▼</span></button>
+    <div class="sub" id="pfm"><button data-v="ledger">Ledger</button><button data-v="liquidity">Liquidity</button></div>
+    <button data-sub="rpm"><i>📊</i>Reports<span class="car">▼</span></button>
+    <div class="sub" id="rpm"><button data-v="reports">Statements</button><button data-v="regrep">Auditing</button></div>
+    <button data-v="audit"><i>🛡️</i>System Auditor</button>
+    <button class="out" id="logout"><i>⎋</i>Logout</button>
+  </aside>
+
+  <div id="wm"><img id="wmLogo" alt=""></div>
+  <div class="wrap">
+    <div class="bar">
+      <div><h2 id="vt">Welcome</h2><small id="who">Signed in as admin@elitesacco.co.ug · Admin</small></div>
+    </div>
+    <div id="view"></div>
+  </div>
 </div>
+
 <script>
-const tabs=document.querySelectorAll('[data-tab]');
-tabs.forEach(t=>t.addEventListener('click',()=>{
-  tabs.forEach(b=>b.setAttribute('aria-selected',b===t));
-  document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!==t.dataset.tab);
+const tabs = document.querySelectorAll('[data-tab]');
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(b => b.setAttribute('aria-selected', b === t));
+  document.querySelectorAll('main section').forEach(s => s.hidden = s.id !== t.dataset.tab);
 }));
 
-const dlg=document.getElementById('regmodal');
-document.getElementById('openReg').addEventListener('click',e=>{e.preventDefault();dlg.showModal();});
-document.getElementById('closeReg').addEventListener('click',()=>dlg.close());
-dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+const dlg = document.getElementById('regmodal');
+document.getElementById('openReg').addEventListener('click', e => {
+  e.preventDefault();
+  dlg.showModal();
+});
+document.getElementById('closeReg').addEventListener('click', () => dlg.close());
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
 const normalizeEmail = v => String(v || '').trim().toLowerCase();
 const normalizePhone = v => String(v || '').replace(/[^0-9+]/g, '');
 
-const rf=document.getElementById('regform');
-rf.addEventListener('submit',e=>{
-  e.preventDefault();
-  const m=document.getElementById('pwmsg');m.textContent='';
-  if(!rf.checkValidity()){rf.reportValidity();return;}
-  if(rf.pw1.value!==rf.pw2.value){m.textContent='Passwords do not match.';rf.pw2.focus();return;}
+const PERMS = ['Approve loans','Acknowledge savings/deposits','Acknowledge loan repayments','Set interest rates','Create/remove system users','Create/remove member accounts','Weekly reports','Monthly reports'];
+const ROLES = ['Admin','Treasurer','Credit Supervisor','Credit Officer'];
 
-  const first=rf.fn.value.trim();
-  const last=rf.ln.value.trim();
-  const email=rf.em.value.trim();
-  const phone=rf.ph.value.trim();
-  const nin=rf.nin.value.trim().toUpperCase();
+const dflt = () => {
+  const r = {};
+  ROLES.forEach((x, i) => {
+    r[x] = PERMS.map((_, j) => {
+      if (x === 'Admin') return true;
+      if (x === 'Treasurer') return [1,2,6,7].includes(j);
+      if (x === 'Credit Supervisor') return [0,2,3,6,7].includes(j);
+      if (x === 'Credit Officer') return [1,2,6,7].includes(j);
+      return false;
+    });
+  });
+  return r;
+};
+
+let S = {
+  users: [
+    { name: 'System Admin', email: 'admin@elitesacco.co.ug', phone: '+256700000000', role: 'Admin', pw: 'Admin123!' }
+  ],
+  members: [],
+  savings: [],
+  loans: [],
+  roles: dflt(),
+  seq: 0,
+  non: [],
+  reqs: [],
+  lseq: 0,
+  audit: [],
+  sseq: 0
+};
+
+try {
+  const x = localStorage.getItem('esacco');
+  if (x) {
+    const saved = JSON.parse(x);
+    S = { ...S, ...saved };
+  }
+} catch (e) {}
+
+S.users = Array.isArray(S.users) ? S.users : [
+  { name: 'System Admin', email: 'admin@elitesacco.co.ug', phone: '+256700000000', role: 'Admin', pw: 'Admin123!' }
+];
+S.non = S.non || [];
+S.reqs = S.reqs || [];
+S.lseq = S.lseq || 0;
+S.audit = S.audit || [];
+S.sseq = S.sseq || 0;
+
+const save = () => {
+  try { localStorage.setItem('esacco', JSON.stringify(S)); } catch (e) {}
+};
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+
+const $ = s => document.querySelector(s);
+const V = $('#view');
+const fmt = n => 'UGX ' + Math.round(n || 0).toLocaleString();
+const iso = d => new Date(d).toISOString().slice(0,10);
+
+let cu = S.users[0];
+
+const audit = (act, part, u = cu) => {
+  (S.audit = S.audit || []).push({
+    t: new Date().toISOString(),
+    ini: (u.name || '').split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0,3),
+    user: u.name || u.email || 'Unknown',
+    role: u.role || 'Member',
+    act,
+    part
+  });
+  if (S.audit.length > 5000) S.audit.splice(0, S.audit.length - 5000);
+  save();
+};
+
+const f = $('#login form');
+
+const rf = document.getElementById('regform');
+rf.addEventListener('submit', e => {
+  e.preventDefault();
+  const m = document.getElementById('pwmsg');
+  m.textContent = '';
+
+  if (!rf.checkValidity()) {
+    rf.reportValidity();
+    return;
+  }
+
+  if (rf.pw1.value !== rf.pw2.value) {
+    m.textContent = 'Passwords do not match.';
+    rf.pw2.focus();
+    return;
+  }
+
+  const first = rf.fn.value.trim();
+  const last = rf.ln.value.trim();
+  const email = rf.em.value.trim();
+  const phone = rf.ph.value.trim();
+  const nin = rf.nin.value.trim().toUpperCase();
 
   const exists = S.users.some(u =>
     (u.email && normalizeEmail(u.email) === normalizeEmail(email)) ||
@@ -335,8 +435,8 @@ rf.addEventListener('submit',e=>{
     (u.nin && String(u.nin).toUpperCase() === nin)
   );
 
-  if(exists){
-    m.textContent='An account with this email, phone, or NIN already exists.';
+  if (exists) {
+    m.textContent = 'An account with this email, phone, or NIN already exists.';
     return;
   }
 
@@ -347,8 +447,8 @@ rf.addEventListener('submit',e=>{
     email,
     phone,
     nin,
-    role:'Member',
-    pw:rf.pw1.value
+    role: 'Member',
+    pw: rf.pw1.value
   });
 
   save();
@@ -356,215 +456,169 @@ rf.addEventListener('submit',e=>{
   rf.reset();
   dlg.close();
 });
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>
-(() => {
-const $=s=>document.querySelector(s),V=$('#view'),fmt=n=>'UGX '+Math.round(n||0).toLocaleString(),iso=d=>new Date(d).toISOString().slice(0,10);
-const PERMS=['Approve loans','Acknowledge savings/deposits','Acknowledge loan repayments','Set interest rates','Create/remove system users','Create/remove member accounts','Weekly reports','Monthly reports'];
-const ROLES=['Admin','Treasurer','Credit Supervisor','Credit Officer'];
-const dflt=()=>{const r={};ROLES.forEach((x,i)=>r[x]=PERMS.map((_,j)=>x=='Admin'||(x=='Treasurer'&&[1,2,6,7].includes(j))||(x=='Credit Supervisor'&&[0,2,3,6,7].includes(j))||(x=='Credit Officer'&&[1,2,3,6].includes(j))));return r;};
-let S={
-  users:[
-    {name:'System Admin',email:'admin@elitesacco.co.ug',phone:'+256700000000',role:'Admin',pw:'Admin123!'}
-  ],
-  members:[],
-  savings:[],
-  loans:[],
-  roles:dflt(),
-  seq:0,
-  non:[]
-};
 
-try{
-  const x=localStorage.getItem('esacco');
-  if(x){
-    const saved=JSON.parse(x);
-    S = Object.assign({}, S, saved);
-  }
-}catch(e){}
-
-S.users = Array.isArray(S.users) ? S.users : [{name:'System Admin',email:'admin@elitesacco.co.ug',phone:'+256700000000',role:'Admin',pw:'Admin123!'}];
-S.non=S.non||[];
-S.reqs=S.reqs||[];
-S.lseq=S.lseq||0;
-S.audit=S.audit||[];
-S.sseq=S.sseq||0;
-
-const save=()=>{try{localStorage.setItem('esacco',JSON.stringify(S))}catch(e){}};
-const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const mem=a=>S.members.find(m=>m.acc==a);
-const ini=u=>u.ini||(u.name||'').split(/\s+/).map(w=>w[0]||'').join('').toUpperCase().slice(0,3);let cu=S.users[0];const me=()=>ini(cu);const isAdmin=()=>cu.role=='Admin';
-const dd=x=>/^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(x)?String(x).replace('T',' '):iso(x);
-const audit=(act,part,u)=>{u=u||cu;(S.audit=S.audit||[]).push({t:new Date().toISOString(),ini:ini(u),user:u.name,role:u.role,act,part});if(S.audit.length>5000)S.audit.splice(0,S.audit.length-5000);save();};
-const who=l=>{const m=mem(l.acc);if(m)return{acc:m.acc,name:m.first+' '+m.last,nm:0};const n=S.non.find(x=>x.id==l.nid);return{acc:'',name:n?n.name:'Unknown',nm:1}};
-const nmv=w=>w.nm?`<i>${esc(w.name)}</i>`:esc(w.name);
-const mopts=()=>S.members.map(m=>`<option value="${m.acc}">${m.acc} — ${esc(m.first)} ${esc(m.last)}</option>`).join('');
-const f=$('#login form');
-f.onsubmit=e=>{
+f.onsubmit = e => {
   e.preventDefault();
 
-  const id=f.querySelector('[name=id]').value.trim();
-  const pw=f.querySelector('[name=pw]').value;
-  const key=normalizeEmail(id);
-  const phone=normalizePhone(id);
+  const id = f.querySelector('[name=id]').value.trim();
+  const pw = f.querySelector('[name=pw]').value;
+  const key = normalizeEmail(id);
+  const phone = normalizePhone(id);
 
-  let m=$('#lerr');
-  if(!m){
-    m=document.createElement('div');
-    m.id='lerr';
-    m.className='msg err';
+  let m = $('#lerr');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'lerr';
+    m.className = 'msg err';
     document.querySelector('#login').appendChild(m);
   }
 
-  const u=S.users.find(x=>{
+  const u = S.users.find(x => {
     const emailMatch = normalizeEmail(x.email) === key || normalizeEmail(x.email) === `${key}@elitesacco.co.ug`;
     const phoneMatch = normalizePhone(x.phone || '') === phone;
     const passwordMatch = String(x.pw || '') === String(pw);
-
     return (emailMatch || phoneMatch) && passwordMatch;
   });
 
-  if(u){
-    cu=u;
-    audit('Login','Signed in successfully');
+  if (u) {
+    cu = u;
+    audit('Login', 'Signed in successfully');
     document.body.classList.add('in');
-    m.textContent='';
+    m.textContent = '';
     R.home();
-  }else{
-    m.textContent='Invalid login details.';
+  } else {
+    m.textContent = 'Invalid login details.';
   }
 };
-$('#side').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.sub){const s=$('#side');$('#'+b.dataset.sub).classList.toggle('show');if(s.classList.contains('manual')){if(!s.classList.contains('pin')){s.classList.add('pin');document.body.classList.add('pinned')}}} else if(b.dataset.v){go(b.dataset.v);if(matchMedia('(hover:none)').matches)$('#side').classList.remove('open')}});
-const pinReset=()=>{const s=$('#side');s.classList.remove('manual','pin');document.body.classList.remove('pinned');$('#pinBtn').setAttribute('aria-expanded','false');$('#pinTx').textContent='Hide dashboard';};
-$('#pinBtn').onclick=()=>{const s=$('#side'),show=!(s.classList.contains('pin')||(!s.classList.contains('manual')&&(s.matches(':hover')||s.classList.contains('open'))));s.classList.add('manual');s.classList.remove('open');s.classList.toggle('pin',show);document.body.classList.toggle('pinned',show);$('#pinBtn').setAttribute('aria-expanded',show);$('#pinTx').textContent=show?'Hide dashboard':'Show dashboard';};
-const tg=()=>{document.body.classList.toggle('blank');$('#side').classList.remove('open');$('#cfg').classList.remove('show');$('#lnm').classList.remove('show');$('#svm').classList.remove('show');$('#rpm').classList.remove('show');$('#pfm').classList.remove('show');};
-$('#side .top').onclick=tg;$('#side .top').onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();tg()}};
-const T={home:'Dashboard',users:'Users',access:'Access Levels',members:'Members',sdep:'Deposits / Withdrawals',sacc:'Member Accounts',audit:'System Auditor',ledger:'Ledger',liquidity:'Liquidity',reports:'Statements',regrep:'Auditing',lreq:'Loan Requests',lapp:'Loan Approval',lsec:'Loans Section'};
-function go(v){if(!can(v))v='home';menuVis();document.body.classList.remove('blank');$('#vt').textContent=T[v];document.querySelectorAll('#side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));document.querySelectorAll('#side [data-sub]').forEach(b=>b.classList.remove('on'));if(v=='home'){$('#cfg').classList.add('show');}if(v=='sdep'||v=='sacc')$('#svm').classList.add('show');if(v=='reports'||v=='regrep')$('#rpm').classList.add('show');if(v=='ledger'||v=='liquidity')$('#pfm').classList.add('show');if(v=='lreq'||v=='lapp'||v=='lsec')$('#lnm').classList.add('show');R[v]();}
-const tbl=(h,rows,n=[])=><div class="tw"><table><tr>${h.map((x,i)=>`<th class="${n.includes(i)?'n':''}">${x}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map((x,i)=>`<td class="${n.includes(i)?'n':''}">${x}</td>`).join('')}</tr>`).join('')}</table></div>;
-const say=(t,err)=>{const m=$('#msg');if(m){m.className='msg'+(err?' err':'');m.textContent=t}};
-function bal(l,to=new Date()){const r=l.rate/100,d=new Date(l.date),rp=(l.reps||[]).map(x=>[new Date(x.date),x.amt]);let b=l.amt,k=0,prev=new Date(+d-1);while(true){const nx=new Date(d.getFullYear(),d.getMonth()+k+1,d.getDate());if(nx>to)break;const p=rp.filter(x=>x[0]>prev&&x[0]<=nx).reduce((a,x)=>a+x[1],0);b=Math.max(0,b-p)*(1+r);prev=nx;k++;}b-=rp.filter(x=>x[0]>prev&&x[0]<=to).reduce((a,x)=>a+x[1],0);return {b:Math.max(0,b),k}};
-const sv=a=>S.savings.filter(s=>!a||s.acc==a).reduce((t,s)=>t+(s.w?-s.amt:s.amt),0);
-const num=x=>parseFloat(String(x).replace(/[^0-9.\-]/g,''))||0;
-function sim(l){const r=l.rate/100,d=new Date(l.date),rp=[...(l.reps||[])].sort((a,b)=>new Date(a.date)-new Date(b.date));let P=l.amt,I=0,k=0;const out=[];const nx=()=>new Date(d.getFullYear(),d.getMonth()+k+1,d.getDate());rp.forEach(x=>{const xd=new Date(x.date);while(nx() < xd){I+=(P+I)*r;k++}let a=x.amt;const i=Math.min(a,I);I-=i;a-=i;const p=Math.min(a,P);P-=p;out.push({date:x.date,p,i,bal:P+I,ini:x.ini,type:x.type})});return out}
-const R={
-home(){V.innerHTML=`<div class="card"><h3>Welcome</h3><p>Dashboard is available.</p></div>`;},
-users(){V.innerHTML=`<div class="card"><h3>System users</h3>${tbl(['Name','Role'],S.users.map(u=>[esc(u.name),esc(u.role)]))}</div>`;},
-access(){V.innerHTML=`<div class="card"><h3>Access Levels</h3>${tbl(['Permission',...ROLES],PERMS.map((p,j)=>[p,...ROLES.map(r=>`<input type="checkbox" data-r="${r}" data-j="${j}" ${S.roles[r][j]?'checked':''}>`)]))}</div>`;},
-members(){V.innerHTML=`<div class="card"><h3>Members</h3>${tbl(['Account','Name','Telephone'],S.members.map(m=>[m.acc,esc(m.first+' '+m.last),esc(m.tel)]))}</div>`;},
-sdep(){V.innerHTML=`<div class="card"><h3>Deposits / Withdrawals</h3>${tbl(['Ref','Date','Account','Amount'],S.savings.slice(0,20).map(s=>[s.ref,s.date,s.acc,fmt(s.amt)]))}</div>`;},
-sacc(){
-  const rs=S.members.map(m=>{const dep=S.savings.filter(s=>s.acc==m.acc&&!s.w).reduce((a,s)=>a+s.amt,0),wd=S.savings.filter(s=>s.acc==m.acc&&s.w).reduce((a,s)=>a+s.amt,0),sav=dep-wd,loans=S.loans.filter(l=>l.acc==m.acc).reduce((a,l)=>a+bal(l).b,0),net=sav-loans;return {m,dep,wd,sav,net,loans};});
-  const rows=rs.map(r=>[
-    esc(r.m.acc),esc(r.m.first+' '+r.m.last),esc(r.m.tel),
-    n0(r.dep),n0(r.wd),'<b>'+n0(r.sav)+'</b>','<b>'+n0(Math.round(r.sav*1.05))+'</b>',
-    n0(r.loans),'<b style="color:'+(r.net<0?'#D62828':'#0a7a3b')+'">'+n0(r.net)+'</b>'
-  ]);
-  V.innerHTML=`<div class="card"><h3>Member accounts — current position</h3>${tbl(['Account','Member','Telephone','Deposits','Withdrawals','Savings balance','Balance + 5%/mo','Loan outstanding','Net position'],rows,[3,4,5,6,7,8])}</div>`;
-},
-audit(){V.innerHTML=`<div class="card"><h3>System activity log</h3>${tbl(['Date','User','Role','Activity'],(S.audit||[]).slice(-20).reverse().map(x=>[x.t.split('T')[0],esc(x.user),esc(x.role),esc(x.act)]))}</div>`;},
-ledger(){V.innerHTML=`<div class="card"><h3>General ledger</h3><p>Ledger not enabled in this minimal view.</p></div>`;},
-liquidity(){V.innerHTML=`<div class="card"><h3>Liquidity</h3><p>Liquidity summary not enabled in this minimal view.</p></div>`;},
-reports(){V.innerHTML=`<div class="card"><h3>Statements</h3><p>Statement generation is available in the full application view.</p></div>`;},
-regrep(){V.innerHTML=`<div class="card"><h3>Auditing</h3><p>Regulatory return generation is available in the full application view.</p></div>`;},
+
+const mem = a => S.members.find(m => m.acc == a);
+const ini = u => (u.ini || (u.name || '')).split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0,3);
+const who = l => {
+  const m = mem(l.acc);
+  if (m) return { acc: m.acc, name: m.first + ' ' + m.last, nm: 0 };
+  const n = S.non.find(x => x.id == l.nid);
+  return { acc: '', name: n ? n.name : 'Unknown', nm: 1 };
 };
-const n0=x=>Math.round(x||0).toLocaleString();
-const can=v=>!['lreq','lapp','lsec','audit','access','users','members','sdep','sacc','ledger','liquidity','reports','regrep'].includes(v)||true;
-const menuVis=()=>{};
-function PMT(P,r,n){return r?P*r/(1-Math.pow(1+r,-n)):P/n;}
-const buildMonthlyLoanSchedule = l => {
-  const term = Math.max(1, Number(l.term) || 1);
-  const rate = Number(l.rate || 0) / 100;
-  const monthlyInstallment = Number(
-    l.installment && l.installment > 0 ? l.installment : PMT(l.amt, rate, term)
-  );
 
-  let balance = l.amt;
-  const rows = [];
+const pinReset = () => {
+  const s = $('#side');
+  s.classList.remove('manual', 'pin');
+  document.body.classList.remove('pinned');
+  $('#pinBtn').setAttribute('aria-expanded', 'false');
+  $('#pinTx').textContent = 'Hide dashboard';
+};
 
-  for (let month = 1; month <= term; month++) {
-    const interest = balance * rate;
-    const principal = Math.min(monthlyInstallment - interest, balance);
-    balance = Math.max(0, balance - principal);
+$('#logout').onclick = () => {
+  audit('Logout', 'Signed out');
+  document.body.classList.remove('in', 'blank');
+  pinReset();
+  f.reset();
+};
 
-    const monthlyBalance = principal + interest; // <-- this is the sum of principal + interest
+$('#side').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.sub) {
+    const s = $('#side');
+    $('#' + b.dataset.sub).classList.toggle('show');
+    if (s.classList.contains('manual')) {
+      if (!s.classList.contains('pin')) {
+        s.classList.add('pin');
+        document.body.classList.add('pinned');
+      }
+    }
+  } else if (b.dataset.v) {
+    go(b.dataset.v);
+    if (matchMedia('(hover:none)').matches) $('#side').classList.remove('open');
+  }
+});
 
-    rows.push([
-      month,
-      fmt(principal),
-      fmt(interest),
-      fmt(monthlyBalance),
-      fmt(balance)
-    ]);
-  }  
-const LA={lreq:['Admin','Credit Officer','Credit Supervisor'],lapp:['Admin']};LA.lsec=LA.lreq;LA.audit=['Admin','Treasurer'];
-const can=v=>!LA[v]||LA[v].includes(cu.role);
-const menuVis=()=>{let any=0;document.querySelectorAll('#lnm [data-v]').forEach(b=>{const ok=can(b.dataset.v);b.style.display=ok?'':'none';if(ok)any=1});$('#lnmBtn').style.display=any?'':'none';if(!any){$('#lnm').classList.remove('show');}};
-const addM=(d,n)=>{d=new Date(d);return new Date(d.getFullYear(),d.getMonth()+n,d.getDate())};
-const fmtD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-const today=()=>fmtD(new Date());
+$('#pinBtn').onclick = () => {
+  const s = $('#side');
+  const show = !(s.classList.contains('pin') || (!s.classList.contains('manual') && (s.matches(':hover') || s.classList.contains('open'))));
+  s.classList.add('manual');
+  s.classList.remove('open');
+  s.classList.toggle('pin', show);
+  document.body.classList.toggle('pinned', show);
+  $('#pinBtn').setAttribute('aria-expanded', show);
+  $('#pinTx').textContent = show ? 'Hide dashboard' : 'Show dashboard';
+};
 
-function lreq(){
-  V.innerHTML=`<div class="card"><h3>New loan request</h3>
-    <div class="row">
-      <div><label>Applicant type</label><select id="qt"><option value="m">SACCO member</option><option value="n">Non-member</option></select></div>
-      <div id="qmw"><label>Member (account)</label><select id="qm"><option value="">— select member —</option>${mopts()}</select></div>
-      <div><label>Applicant name(s)</label><input id="qn" readonly></div>
-      <div><label>Date</label><input id="qd" type="date" value="${today()}"></div>
-    </div>
-    <div class="row">
-      <div><label>Telephone</label><input id="qp" type="tel"></div>
-      <div><label>Email</label><input id="qe" type="email"></div>
-      <div><label>Address</label><input id="qad"></div>
-      <div><label>National ID / NIN</label><input id="qx" type="text"></div>
-    </div>
-    <div class="row">
-      <div><label>Loan category / type</label><select id="qc"><option>Normal Loan</option><option>Special Loan</option><option>Secured Business Loan</option><option>Agricultural Loan</option><option>School Fees Loan</option></select></div>
-      <div><label>Loan term (months)</label><input id="ql" type="number" min="1" max="60" value="6"></div>
-      <div><label>Amount to borrow (UGX)</label><input id="qam" type="number" min="1000" step="1000"></div>
-      <div><label>Manual monthly installment (UGX)</label><input id="qinst" type="number" min="0" step="1000" placeholder="Leave blank to auto-calc"></div>
-    </div>
-    <div class="row">
-      <div><label>Interest rate (% per month)</label><input id="qr" type="number" min="0.01" max="30" step="0.01" placeholder="e.g. 3"></div>
-      <div><label>Suggested rate</label><input id="qrn" value="0" readonly></div>
-    </div>
-    <button class="btn" id="qs">Submit loan request</button><button class="btn alt2" id="qx2">Clear</button><div id="msg" class="msg"></div>
-  </div>
-  <div class="card"><h3>Loan requests</h3>${tbl(['Ref','Date','Applicant','Type','Category','Term','Amount','Rate %/mo','Monthly install','Status'],(S.reqs||[]).map(q=>[q.id,q.date,q.name,q.type=='m'?'Member':'Non-member',q.cat,q.term,fmt(q.amt),q.rate+'%',fmt(q.installment||PMT(q.amt,q.rate/100,q.term)),q.status]))}</div>`;
-  const mb=()=>$('#qt').value=='m';
-  const rate=()=>{const cat=$('#qc').value,term=Number($('#ql').value||0),member=mb();const r=(member?2.5:3)+(term>12?0.5:0);$('#qr').value=String(r.toFixed(2));$('#qrn').value = String(r.toFixed(2));};
-  $('#qt').onchange=()=>{const m=mb();$('#qmw').style.display=m?'':'none';$('#qn').readOnly=m;$('#qn').value=m?($('#qm').value ? $('#qm').selectedOptions[0].text.replace(/.*—\s*/, '') : ''):'';};
-  $('#qm').onchange=()=>{const m=mem($('#qm').value);if(m){$('#qn').value=m.first+' '+m.last;$('#qp').value=m.tel;$('#qad').value=m.addr||'';}};
-  $('#qc').onchange=$('#ql').oninput=rate;
-  $('#qx2').onclick=()=>{R.lreq();};
-  $('#qs').onclick=()=>{
-    const m=mb(),nm=$('#qn').value.trim(),tel=$('#qp').value.trim(),A=num($('#qam').value),T=Math.round(num($('#ql').value)),RT=Number($('#qr').value||0),inst=Number($('#qinst').value||0);
-    if(m&&!$('#qm').value)return say('Select a member.',1);if(!nm)return say('Applicant name is required.',1);if(!tel)return say('Contact telephone is required.',1);if(!$('#qd').value)return say('Choose the date.',1);if(A<=0)return say('Enter the amount to borrow.',1);if(T<1||T>60)return say('Loan term must be 1–60 months.',1);
-    const monthly = inst > 0 ? inst : Math.round(PMT(A, RT/100, T));
-    S.lseq=(S.lseq||0)+1;const id='LR-'+String(S.lseq).padStart(4,'0');
-    S.reqs.push({id,date:$('#qd').value,type:m?'m':'n',acc:m?$('#qm').value:'',nid:null,name:nm,tel,email:$('#qe').value.trim(),addr:$('#qad').value.trim(),cat:$('#qc').value,term:T,amt:A,rate:RT,installment:monthly,status:'Pending',remark:''});
-    save();R.lreq();say('Request '+id+' submitted for approval.',0);
-  };
+const tg = () => {
+  document.body.classList.toggle('blank');
+  $('#side').classList.remove('open');
+  $('#cfg').classList.remove('show');
+  $('#lnm').classList.remove('show');
+  $('#svm').classList.remove('show');
+  $('#rpm').classList.remove('show');
+  $('#pfm').classList.remove('show');
+};
+
+$('#side .top').onclick = tg;
+$('#side .top').onkeydown = e => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    tg();
+  }
+};
+
+const T = { home:'Dashboard', users:'Users', access:'Access Levels', members:'Members', sdep:'Deposits / Withdrawals', sacc:'Member Accounts', audit:'System Auditor', ledger:'Ledger', liquidity:'Liquidity', reports:'Statements', regrep:'Auditing' };
+
+function go(v) {
+  if (!can(v)) v = 'home';
+  menuVis();
+  document.body.classList.remove('blank');
+  $('#vt').textContent = T[v];
+  document.querySelectorAll('#side [data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v));
 }
 
-function lapp(){
-  const pend=(S.reqs||[]).filter(q=>q.status=='Pending'||q.status=='On Hold');
-  V.innerHTML=`<div class="card"><h3>Awaiting decision</h3>${tbl(['Ref','Date','Applicant','Amount','Rate %/mo','Monthly install','Status','Action'],pend.map(q=>[q.id,q.date,esc(q.name),fmt(q.amt),q.rate+'%',fmt(q.installment||PMT(q.amt,q.rate/100,q.term)),q.status,`<button class="btn sm" data-approve="${q.id}">Approve</button> <button class="btn sm alt2" data-hold="${q.id}">Hold</button> <button class="btn sm alt2" data-reject="${q.id}">Reject</button>`]))}</div>`;
-  V.querySelectorAll('[data-approve]').forEach(b=>b.onclick=()=>{const q=(S.reqs||[]).find(x=>x.id==b.dataset.approve);q.status='Approved';q.remark='Approved by '+cu.name; if(!q.installment) q.installment=Math.round(PMT(q.amt,q.rate/100,q.term)); S.loans.push({ref:'LN-'+String(S.loans.length+1).padStart(4,'0'),acc:q.acc||'',nid:q.nid,amt:q.amt,rate:q.rate,installment:q.installment,date:today(),cat:q.cat,term:q.term,tel:q.tel,reps:[],ini:me()});save();R.lapp();});
-  V.querySelectorAll('[data-hold]').forEach(b=>b.onclick=()=>{const q=(S.reqs||[]).find(x=>x.id==b.dataset.hold);q.status='On Hold';q.remark='Held by '+cu.name;save();R.lapp();});
-  V.querySelectorAll('[data-reject]').forEach(b=>b.onclick=()=>{const q=(S.reqs||[]).find(x=>x.id==b.dataset.reject);q.status='Rejected';q.remark='Rejected by '+cu.name;save();R.lapp();});
-}
+const tbl = (h, rows, n = []) => `<div class="tw"><table><tr>${h.map((x, i) => `<th class="${n.includes(i) ? 'n' : ''}">${x}</th>`).join('')}</tr>${rows.map(r => `<tr>${r.map((x, i) => `<td class="${n.includes(i) ? 'n' : ''}">${x}</td>`).join('')}</tr>`).join('')}</table></div>`;
 
-function lsec(){
-  V.innerHTML=`<div class="card"><h3>Loans</h3>${tbl(['Ref','Account','Borrower','Category','Term','Principal','Rate %/mo','Installment','Balance','Status'],S.loans.map((l,i)=>[l.ref||('LN-'+String(i+1).padStart(4,'0')),esc(l.acc||''),esc((mem(l.acc)?mem(l.acc).first+' '+mem(l.acc).last:who(l).name)),esc(l.cat||''),l.term||'',fmt(l.amt),l.rate+'%',fmt(l.installment||PMT(l.amt,l.rate/100,l.term)),fmt(bal(l).b),bal(l).b<.5?'Cleared':'Active']))}</div>`;
-  const scheduleCard = S.loans.length ? S.loans.map((l,i)=>`<div class="card"><h3>${l.ref||('LN-'+String(i+1).padStart(4,'0'))} monthly amortization</h3>${tbl(['Month','Principal','Interest','Installment','Balance'],buildMonthlyLoanSchedule(l).map(r=>[r.month,fmt(r.principal),fmt(r.interest),fmt(r.total),fmt(r.balance)]))}</div>`).join('') : '';
-  V.innerHTML += scheduleCard;
-}
+const say = (t, err) => {
+  const m = $('#msg');
+  if (m) {
+    m.className = 'msg' + (err ? ' err' : '');
+    m.textContent = t;
+  }
+};
 
-window.R=R; 
-setTimeout(()=>{if(document.body.classList.contains('in'))R.home();},0);
-})();
+const R = {
+  home() { V.innerHTML = '<div class="card"><h3>Welcome</h3><p>Dashboard is available.</p></div>'; },
+  users() { V.innerHTML = `<div class="card"><h3>System users</h3>${tbl(['Name','Role'], S.users.map(u => [esc(u.name), esc(u.role)]))}</div>`; },
+  access() { V.innerHTML = `<div class="card"><h3>Access Levels</h3>${tbl(['Permission', ...ROLES], PERMS.map((p, j) => [p, ...ROLES.map(r => `<input type="checkbox" data-r="${r}" data-j="${j}" ${S.roles[r][j] ? 'checked' : ''}>`)]))}</div>`; },
+  members() { V.innerHTML = `<div class="card"><h3>Members</h3>${tbl(['Account','Name','Telephone'], S.members.map(m => [m.acc, esc(m.first + ' ' + m.last), esc(m.tel)]))}</div>`; },
+  sdep() { V.innerHTML = `<div class="card"><h3>Deposits / Withdrawals</h3>${tbl(['Ref','Date','Account','Amount'], (S.savings || []).slice(0, 20).map(s => [s.ref, s.date, s.acc, fmt(s.amt)]))}</div>`; },
+  sacc() {
+    const rows = S.members.map(m => {
+      const dep = (S.savings || []).filter(s => s.acc == m.acc && !s.w).reduce((a, s) => a + s.amt, 0);
+      const wd = (S.savings || []).filter(s => s.acc == m.acc && s.w).reduce((a, s) => a + s.amt, 0);
+      const sav = dep - wd;
+      const loans = (S.loans || []).filter(l => l.acc == m.acc).reduce((a, l) => a + (Number(l.amt) || 0), 0);
+      const net = sav - loans;
+      return [m.acc, esc(m.first + ' ' + m.last), esc(m.tel), fmt(dep), fmt(wd), '<b>' + fmt(sav) + '</b>', '<b>' + fmt(sav * 1.05) + '</b>', fmt(loans), '<b style=\"color:' + (net < 0 ? '#D62828' : '#0a7a3b') + '\">' + fmt(net) + '</b>'];
+    });
+    V.innerHTML = `<div class="card"><h3>Member accounts — current position</h3>${tbl(['Account','Member','Telephone','Deposits','Withdrawals','Savings balance','Balance + 5%/mo','Loan outstanding','Net position'], rows)}</div>`;
+  },
+  audit() { V.innerHTML = `<div class="card"><h3>System activity log</h3>${tbl(['Date','User','Role','Activity'], (S.audit || []).slice(-20).reverse().map(x => [x.t.split('T')[0], esc(x.user), esc(x.role), esc(x.act)]))}</div>`; },
+  ledger() { V.innerHTML = '<div class="card"><h3>General ledger</h3><p>Ledger not enabled in this minimal view.</p></div>'; },
+  liquidity() { V.innerHTML = '<div class="card"><h3>Liquidity</h3><p>Liquidity summary not enabled in this minimal view.</p></div>'; },
+  reports() { V.innerHTML = '<div class="card"><h3>Statements</h3><p>Statement generation is available in the full application view.</p></div>'; },
+  regrep() { V.innerHTML = '<div class="card"><h3>Auditing</h3><p>Regulatory return generation is available in the full application view.</p></div>'; }
+};
+
+const can = v => !['lreq','lapp','lsec','audit','access','users','members','sdep','sacc','ledger','liquidity','reports','regrep'].includes(v) || true;
+
+const menuVis = () => {};
+
+window.R = R;
+setTimeout(() => {
+  if (document.body.classList.contains('in')) R.home();
+}, 0);
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </body>
 </html>
