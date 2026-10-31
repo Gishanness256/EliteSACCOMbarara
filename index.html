@@ -383,7 +383,31 @@ const n0=x=>Math.round(x||0).toLocaleString();
 const can=v=>!['lreq','lapp','lsec','audit','access','users','members','sdep','sacc','ledger','liquidity','reports','regrep'].includes(v)||true;
 const menuVis=()=>{};
 function PMT(P,r,n){return r?P*r/(1-Math.pow(1+r,-n)):P/n;}
-const buildMonthlyLoanSchedule=l=>{const term=Math.max(1,Number(l.term)||1);const rate=Number(l.rate||0)/100;const monthlyInstallment=Number(l.installment&&l.installment>0?l.installment:PMT(l.amt,rate,term));let balance=Number(l.amt||0);const rows=[];for(let m=1;m<=term;m++){const interest=balance*rate;const principal=Math.min(monthlyInstallment-interest,balance);balance=Math.max(0,balance-principal);rows.push({month:m,principal:Math.round(principal),interest:Math.round(interest),total:Math.round(monthlyInstallment),balance:Math.round(balance)});}return rows;};
+const buildMonthlyLoanSchedule = l => {
+  const term = Math.max(1, Number(l.term) || 1);
+  const rate = Number(l.rate || 0) / 100;
+  const monthlyInstallment = Number(
+    l.installment && l.installment > 0 ? l.installment : PMT(l.amt, rate, term)
+  );
+
+  let balance = l.amt;
+  const rows = [];
+
+  for (let month = 1; month <= term; month++) {
+    const interest = balance * rate;
+    const principal = Math.min(monthlyInstallment - interest, balance);
+    balance = Math.max(0, balance - principal);
+
+    const monthlyBalance = principal + interest; // <-- this is the sum of principal + interest
+
+    rows.push([
+      month,
+      fmt(principal),
+      fmt(interest),
+      fmt(monthlyBalance),
+      fmt(balance)
+    ]);
+  }  
 const LA={lreq:['Admin','Credit Officer','Credit Supervisor'],lapp:['Admin']};LA.lsec=LA.lreq;LA.audit=['Admin','Treasurer'];
 const can=v=>!LA[v]||LA[v].includes(cu.role);
 const menuVis=()=>{let any=0;document.querySelectorAll('#lnm [data-v]').forEach(b=>{const ok=can(b.dataset.v);b.style.display=ok?'':'none';if(ok)any=1});$('#lnmBtn').style.display=any?'':'none';if(!any){$('#lnm').classList.remove('show');}};
