@@ -26,6 +26,7 @@
       background: linear-gradient(160deg, var(--blue) 0%, var(--blue-deep) 100%);
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
     .topbar {
@@ -41,304 +42,123 @@
       box-shadow: 0 8px 24px rgba(5,15,50,0.25);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      color: var(--white);
-      font-weight: 800;
-      letter-spacing: 0.01em;
-    }
-
+    .brand { display: flex; align-items: center; gap: 0.8rem; color: var(--white); font-weight: 800; }
     .brand-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: var(--white);
-      color: var(--blue);
-      display: grid;
-      place-items: center;
-      font-size: 1.2rem;
-      font-weight: 900;
+      width: 42px; height: 42px; border-radius: 10px; background: var(--white); color: var(--blue);
+      display: grid; place-items: center; font-size: 1.2rem; font-weight: 900;
     }
 
-    nav {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
+    nav { display: flex; gap: 0.4rem; flex-wrap: wrap; }
     nav button {
-      background: transparent;
-      color: rgba(255,255,255,0.85);
-      border: 0;
-      border-radius: 10px;
-      padding: 0.65rem 1rem;
-      font: 600 0.95rem var(--font);
-      cursor: pointer;
+      background: transparent; border: 0; border-radius: 10px; color: rgba(255,255,255,0.85);
+      padding: 0.65rem 1rem; font: 600 0.95rem var(--font); cursor: pointer;
     }
-
-    nav button[aria-selected="true"] {
-      background: var(--white);
-      color: var(--blue);
-    }
+    nav button[aria-selected="true"] { background: var(--white); color: var(--blue); }
 
     main {
-      flex: 1;
-      display: grid;
-      place-items: center;
-      padding: 2rem 1rem 3rem;
+      flex: 1; display: grid; place-items: center; padding: 2rem 1rem 3rem;
     }
 
     .card {
-      width: min(100%, 440px);
-      background: var(--white);
-      border-radius: 28px;
-      padding: 2rem 2rem 2.1rem;
+      width: min(100%, 440px); background: var(--white); border-radius: 28px; padding: 2rem 2rem 2.1rem;
       box-shadow: 0 40px 80px -20px rgba(5,15,50,0.55);
     }
 
-    .logo {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 0.5rem;
-    }
-
+    .logo { display: flex; justify-content: center; margin-bottom: 0.5rem; }
     .logo-badge {
-      width: 180px;
-      height: 80px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--blue-soft), #cfe0ff);
-      display: grid;
-      place-items: center;
-      color: var(--blue);
-      font-weight: 900;
-      font-size: 1.7rem;
-      letter-spacing: 0.06em;
+      width: 180px; height: 80px; border-radius: 18px; background: linear-gradient(135deg, var(--blue-soft), #cfe0ff);
+      display: grid; place-items: center; color: var(--blue); font-weight: 900; font-size: 1.7rem; letter-spacing: 0.06em;
     }
 
-    h1, h2 {
-      margin: 0 0 1rem;
-      font-size: 1.7rem;
-      text-align: center;
-      color: var(--blue);
+    h1, h2 { margin: 0 0 1rem; font-size: 1.7rem; text-align: center; color: var(--blue); }
+    label { display: block; color: var(--blue); font-weight: 600; font-size: 0.85rem; margin: 1rem 0 0.45rem; }
+    input, select {
+      width: 100%; border: 1.5px solid transparent; background: var(--blue-soft); border-radius: 14px;
+      padding: 0.9rem 1rem; font: 500 1rem var(--font); color: var(--blue-ink);
     }
-
-    label {
-      display: block;
-      color: var(--blue);
-      font-weight: 600;
-      font-size: 0.85rem;
-      margin: 1rem 0 0.45rem;
-    }
-
-    input {
-      width: 100%;
-      border: 1.5px solid transparent;
-      background: var(--blue-soft);
-      border-radius: 14px;
-      padding: 0.9rem 1rem;
-      font: 500 1rem var(--font);
-      color: var(--blue-ink);
-    }
-
-    input:focus {
-      outline: none;
-      border-color: var(--blue);
-      background: var(--white);
-      box-shadow: 0 0 0 4px rgba(27, 60, 145, 0.12);
-    }
+    input:focus, select:focus { outline: none; border-color: var(--blue); background: var(--white); box-shadow: 0 0 0 4px rgba(27,60,145,0.12); }
 
     .btn {
-      width: 100%;
-      margin-top: 1.5rem;
-      border: 0;
-      border-radius: 14px;
-      padding: 1rem;
-      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 100%);
-      color: var(--white);
-      font: 700 1rem var(--font);
-      cursor: pointer;
-      box-shadow: 0 14px 26px -10px rgba(27,60,145,0.7);
+      width: 100%; margin-top: 1.5rem; border: 0; border-radius: 14px; padding: 1rem;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 100%); color: var(--white);
+      font: 700 1rem var(--font); cursor: pointer; box-shadow: 0 14px 26px -10px rgba(27,60,145,0.7);
     }
-
     .btn.secondary {
-      background: #fff;
-      color: var(--blue);
-      border: 1.5px solid var(--blue);
-      box-shadow: none;
-      margin-top: 0.9rem;
+      background: #fff; color: var(--blue); border: 1.5px solid var(--blue); box-shadow: none; margin-top: 0.9rem;
     }
 
-    .alt {
-      margin-top: 1rem;
-      text-align: center;
-      font-size: 0.92rem;
-      color: var(--blue-ink);
-    }
-
-    .alt a {
-      color: var(--blue);
-      text-decoration: none;
-      font-weight: 800;
-      border-bottom: 2px solid rgba(27,60,145,0.35);
-    }
+    .alt { margin-top: 1rem; text-align: center; font-size: 0.92rem; color: var(--blue-ink); }
+    .alt a { color: var(--blue); text-decoration: none; font-weight: 800; border-bottom: 2px solid rgba(27,60,145,0.35); }
 
     .msg {
-      margin-top: 0.8rem;
-      min-height: 1.2em;
-      font-weight: 700;
-      font-size: 0.82rem;
-      color: var(--green);
+      margin-top: 0.8rem; min-height: 1.2em; font-weight: 700; font-size: 0.82rem; color: var(--green);
     }
-
-    .msg.err {
-      color: var(--red);
-    }
+    .msg.err { color: var(--red); }
 
     .dashboard {
-      display: none;
-      width: 100%;
-      min-height: 100vh;
-      background: #f3f6fd;
-      color: var(--blue-ink);
-      padding: 2rem;
+      display: none; width: 100%; min-height: 100vh; background: #f3f6fd; padding: 2rem; color: var(--blue-ink);
     }
-
-    body.logged-in .dashboard {
-      display: block;
-    }
-
-    body.logged-in main {
-      display: none;
-    }
-
-    body.logged-in .topbar {
-      display: none;
-    }
+    body.logged-in .dashboard { display: block; }
+    body.logged-in main { display: none; }
+    body.logged-in .topbar { display: none; }
 
     .dash-shell {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: var(--white);
-      border-radius: 22px;
-      padding: 1.25rem 1.5rem;
+      max-width: 1100px; margin: 0 auto; background: var(--white); border-radius: 22px; padding: 1.25rem 1.5rem;
       box-shadow: 0 12px 35px -20px rgba(15,37,102,0.4);
     }
 
     .dash-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: center;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 1rem;
-      margin-bottom: 1rem;
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem; border-bottom: 1px solid var(--line);
+      padding-bottom: 1rem; margin-bottom: 1rem;
+    }
+    .dash-top h2 { margin: 0; text-align: left; font-size: 1.55rem; }
+    .dash-actions { display: flex; gap: .7rem; align-items: center; }
+    .logout, .admin-action {
+      border: 0; background: var(--blue-soft); color: var(--blue); border-radius: 12px; padding: 0.72rem 1rem;
+      font: 700 0.9rem var(--font); cursor: pointer;
     }
 
-    .dash-top h2 {
-      margin: 0;
-      color: var(--blue);
-      font-size: 1.55rem;
-      text-align: left;
-    }
-
-    .logout {
-      border: 0;
-      background: var(--blue-soft);
-      color: var(--blue);
-      border-radius: 12px;
-      padding: 0.75rem 1rem;
-      font: 700 0.9rem var(--font);
-      cursor: pointer;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-      margin: 1rem 0 1.5rem;
-    }
-
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1rem 0 1.5rem; }
     .stat {
-      background: linear-gradient(135deg, var(--blue), var(--blue-deep));
-      color: var(--white);
-      border-radius: 16px;
-      padding: 1rem 1.1rem;
+      background: linear-gradient(135deg, var(--blue), var(--blue-deep)); color: var(--white); border-radius: 16px; padding: 1rem 1.1rem;
     }
+    .stat small { opacity: 0.8; display: block; margin-bottom: 0.3rem; }
+    .stat strong { font-size: 1.45rem; }
 
-    .stat small {
-      opacity: 0.8;
-      display: block;
-      margin-bottom: 0.3rem;
+    .section-box {
+      background: #ffffff; border: 1px solid var(--line); border-radius: 18px; padding: 1rem; margin-top: 1rem;
+      box-shadow: 0 10px 18px -16px rgba(15,37,102,0.35);
     }
+    .section-box h3 { margin: 0 0 0.8rem; font-size: 1rem; color: var(--blue); }
 
-    .stat strong {
-      font-size: 1.45rem;
+    .table-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; min-width: 560px; }
+    th, td { padding: 0.7rem 0.8rem; text-align: left; border-bottom: 1px solid var(--line); }
+    th { background: var(--blue-soft); color: var(--blue); }
+
+    .chip {
+      display: inline-block; background: var(--blue-soft); color: var(--blue); border-radius: 999px; padding: 0.2rem 0.7rem;
+      font-size: 0.78rem; font-weight: 700;
     }
 
     .modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(10, 26, 74, 0.6);
-      padding: 1rem;
-      z-index: 20;
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(10,26,74,0.6);
+      padding: 1rem; z-index: 20;
     }
-
-    .modal.open {
-      display: flex;
-    }
-
+    .modal.open { display: flex; }
     .modal-panel {
-      width: min(100%, 620px);
-      max-height: 90vh;
-      overflow: auto;
-      background: var(--white);
-      border-radius: 24px;
-      padding: 1.5rem 1.4rem;
-      box-shadow: 0 40px 80px -20px rgba(5,15,50,0.7);
+      width: min(100%, 620px); max-height: 90vh; overflow: auto; background: var(--white); border-radius: 24px;
+      padding: 1.5rem 1.4rem; box-shadow: 0 40px 80px -20px rgba(5,15,50,0.7);
     }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .modal-header h2 {
-      margin: 0;
-      font-size: 1.8rem;
-      text-align: left;
-    }
-
+    .modal-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.5rem; }
+    .modal-header h2 { margin: 0; text-align: left; }
     .close-btn {
-      border: 0;
-      background: var(--blue-soft);
-      color: var(--blue);
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      font: 700 1.5rem var(--font);
-      cursor: pointer;
+      border: 0; background: var(--blue-soft); color: var(--blue); width: 38px; height: 38px; border-radius: 50%;
+      font: 700 1.5rem var(--font); cursor: pointer;
     }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.75rem 1rem;
-    }
-
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem 1rem; }
     .full { grid-column: 1 / -1; }
-
-    .required {
-      color: var(--red);
-      font-weight: 800;
-    }
+    .required { color: var(--red); font-weight: 800; }
 
     @media (max-width: 520px) {
       .card { padding: 1.5rem 1.2rem 1.7rem; }
@@ -364,9 +184,7 @@
 
   <main>
     <section class="card" aria-label="Login section">
-      <div class="logo">
-        <div class="logo-badge">ELITE</div>
-      </div>
+      <div class="logo"><div class="logo-badge">ELITE</div></div>
       <h1>Login</h1>
       <form id="loginForm" novalidate>
         <label for="userId">Email or phone number</label>
@@ -379,6 +197,7 @@
         <div id="loginMsg" class="msg" aria-live="polite"></div>
 
         <p class="alt">Don't have an account? <a href="#" id="openReg">Create Account</a></p>
+        <p class="alt"><a href="#" id="openReset">Forgot password?</a></p>
       </form>
     </section>
   </main>
@@ -389,40 +208,15 @@
         <h2 id="regTitle">Create Account</h2>
         <button class="close-btn" id="closeReg" type="button" aria-label="Close registration">&times;</button>
       </div>
-
       <form id="registerForm" novalidate>
         <div class="two-col">
-          <div>
-            <label for="firstName">First Name <span class="required">*</span></label>
-            <input id="firstName" name="firstName" type="text" required />
-          </div>
-
-          <div>
-            <label for="lastName">Last Name <span class="required">*</span></label>
-            <input id="lastName" name="lastName" type="text" required />
-          </div>
-
-          <div class="full">
-            <label for="regPhone">Phone <span class="required">*</span></label>
-            <input id="regPhone" name="phone" type="tel" autocomplete="tel" required />
-          </div>
-
-          <div class="full">
-            <label for="regEmail">Email</label>
-            <input id="regEmail" name="email" type="email" autocomplete="email" />
-          </div>
-
-          <div>
-            <label for="regPassword">Password <span class="required">*</span></label>
-            <input id="regPassword" name="password" type="password" minlength="6" autocomplete="new-password" required />
-          </div>
-
-          <div>
-            <label for="regConfirmPassword">Confirm Password <span class="required">*</span></label>
-            <input id="regConfirmPassword" name="confirmPassword" type="password" minlength="6" autocomplete="new-password" required />
-          </div>
+          <div><label for="firstName">First Name <span class="required">*</span></label><input id="firstName" name="firstName" type="text" required /></div>
+          <div><label for="lastName">Last Name <span class="required">*</span></label><input id="lastName" name="lastName" type="text" required /></div>
+          <div class="full"><label for="regPhone">Phone <span class="required">*</span></label><input id="regPhone" name="phone" type="tel" autocomplete="tel" required /></div>
+          <div class="full"><label for="regEmail">Email</label><input id="regEmail" name="email" type="email" autocomplete="email" /></div>
+          <div><label for="regPassword">Password <span class="required">*</span></label><input id="regPassword" name="password" type="password" minlength="6" autocomplete="new-password" required /></div>
+          <div><label for="regConfirmPassword">Confirm Password <span class="required">*</span></label><input id="regConfirmPassword" name="confirmPassword" type="password" minlength="6" autocomplete="new-password" required /></div>
         </div>
-
         <div id="regMsg" class="msg" aria-live="polite"></div>
         <button class="btn" type="submit">Create Account</button>
         <button class="btn secondary" type="button" id="cancelReg">Cancel</button>
@@ -430,18 +224,42 @@
     </div>
   </div>
 
+  <div id="resetModal" class="modal" aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+      <div class="modal-header">
+        <h2 id="resetTitle">Reset Password</h2>
+        <button class="close-btn" id="closeReset" type="button" aria-label="Close password reset">&times;</button>
+      </div>
+      <form id="resetForm" novalidate>
+        <div class="two-col">
+          <div class="full"><label for="resetId">Email or phone number <span class="required">*</span></label><input id="resetId" name="resetId" type="text" required /></div>
+          <div class="full"><label for="newPassword">New password <span class="required">*</span></label><input id="newPassword" name="newPassword" type="password" minlength="6" required /></div>
+          <div class="full"><label for="newPasswordConfirm">Confirm new password <span class="required">*</span></label><input id="newPasswordConfirm" name="newPasswordConfirm" type="password" minlength="6" required /></div>
+        </div>
+        <div id="resetMsg" class="msg" aria-live="polite"></div>
+        <button class="btn" type="submit">Reset Password</button>
+        <button class="btn secondary" type="button" id="cancelReset">Cancel</button>
+      </form>
+    </div>
+  </div>
+
   <section class="dashboard" aria-live="polite">
     <div class="dash-shell">
       <div class="dash-top">
-        <h2>Dashboard</h2>
-        <button class="logout" id="logoutBtn" type="button">Logout</button>
+        <h2 id="dashboardTitle">Dashboard</h2>
+        <div class="dash-actions">
+          <button class="admin-action" id="refreshUsers" type="button">Refresh</button>
+          <button class="logout" id="logoutBtn" type="button">Logout</button>
+        </div>
       </div>
+
       <div class="stats">
         <div class="stat"><small>Members</small><strong id="memberCount">0</strong></div>
         <div class="stat"><small>Loan Book</small><strong id="loanBook">UGX 0</strong></div>
         <div class="stat"><small>Savings</small><strong id="savingsTotal">UGX 0</strong></div>
       </div>
-      <p>Welcome to the Elite SACCO management dashboard.</p>
+
+      <div id="dashboardContent"></div>
     </div>
   </section>
 
@@ -467,13 +285,10 @@
       audit: []
     });
 
-    const isAdminUser = (user) => {
-      const email = normalizeEmail(user?.email || '');
-      const phone = normalizePhone(user?.phone || '');
-      const name = normalizeText(user?.name || '').toLowerCase();
-      return email === normalizeEmail(DEFAULT_ADMIN.email)
-        || phone === normalizePhone(DEFAULT_ADMIN.phone)
-        || name.includes('system admin');
+    const isAdminUser = (user = {}) => {
+      const email = normalizeEmail(user.email || '');
+      const phone = normalizePhone(user.phone || '');
+      return email === normalizeEmail(DEFAULT_ADMIN.email) || phone === normalizePhone(DEFAULT_ADMIN.phone) || (user.role || '').toLowerCase() === 'admin';
     };
 
     const sanitizeUserRecord = (user) => {
@@ -489,7 +304,7 @@
         last: normalizeText(user.last || ''),
         email,
         phone,
-        role: user.role || 'Member',
+        role: normalizeText(user.role || 'Member'),
         pw,
         nin: normalizeText(user.nin || '')
       };
@@ -502,99 +317,162 @@
         if (!raw) return base;
         const saved = JSON.parse(raw);
         if (!saved || typeof saved !== 'object') return base;
-
         const users = Array.isArray(saved.users)
           ? saved.users.map(sanitizeUserRecord).filter(Boolean)
           : [...base.users];
-
         const safeUsers = users.length ? users : [...base.users];
         if (!safeUsers.some(isAdminUser)) safeUsers.unshift({ ...DEFAULT_ADMIN });
-
-        return {
-          ...base,
-          ...saved,
-          users: safeUsers
-        };
+        return { ...base, ...saved, users: safeUsers.map(sanitizeUserRecord).filter(Boolean) };
       } catch (e) {
         return base;
       }
     };
 
     let S = loadState();
-
-    const persistState = () => {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(S));
-      } catch (e) {
-        // Ignore storage errors.
-      }
-    };
+    let currentUser = null;
 
     const ensureDefaultAdmin = () => {
-      if (!S.users || !Array.isArray(S.users)) {
-        S.users = [{ ...DEFAULT_ADMIN }];
-      }
-      if (!S.users.some(isAdminUser)) {
-        S.users.unshift({ ...DEFAULT_ADMIN });
-      }
+      if (!S.users || !Array.isArray(S.users)) S.users = [{ ...DEFAULT_ADMIN }];
       S.users = S.users.map(sanitizeUserRecord).filter(Boolean);
-      if (!S.users.some(isAdminUser)) {
-        S.users.unshift({ ...DEFAULT_ADMIN });
-      }
+      if (!S.users.some(isAdminUser)) S.users.unshift({ ...DEFAULT_ADMIN });
     };
-
     ensureDefaultAdmin();
+
+    const persistState = () => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S)); } catch (e) {}
+    };
 
     const loginForm = document.getElementById('loginForm');
     const loginMsg = document.getElementById('loginMsg');
+    const dashboardTitle = document.getElementById('dashboardTitle');
+    const dashboardContent = document.getElementById('dashboardContent');
+
+    const formatCurrency = (value) => 'UGX ' + Number(value || 0).toLocaleString();
+    const memberUsers = () => S.users.filter((user) => !isAdminUser(user));
+
+    const renderDashboard = () => {
+      if (!currentUser) return;
+      const isAdmin = isAdminUser(currentUser);
+      dashboardTitle.textContent = isAdmin ? 'Admin Dashboard' : 'Member Dashboard';
+
+      const userCount = S.users.length;
+      const savings = (S.savings || []).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+      const loans = (S.loans || []).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+      document.getElementById('memberCount').textContent = String(memberUsers().length);
+      document.getElementById('loanBook').textContent = formatCurrency(loans);
+      document.getElementById('savingsTotal').textContent = formatCurrency(savings);
+
+      if (isAdmin) {
+        dashboardContent.innerHTML = `
+          <div class="section-box">
+            <h3>Welcome, ${esc(currentUser.name || 'Administrator')}</h3>
+            <p>Use this dashboard to manage system users, assign roles, and monitor the SACCO.</p>
+          </div>
+
+          <div class="section-box">
+            <h3>System users</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${S.users.map((user) => `
+                    <tr>
+                      <td>${esc(user.name || 'Unknown')}</td>
+                      <td>${esc(user.email || '-')}</td>
+                      <td>${esc(user.phone || '-')}</td>
+                      <td>
+                        <select data-user-email="${esc(user.email || '')}" data-role-select>
+                          ${['Admin','Treasurer','Credit Officer','Member'].map((role) => `<option value="${role}" ${user.role === role ? 'selected' : ''}>${role}</option>`).join('')}
+                        </select>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+
+        document.querySelectorAll('[data-role-select]').forEach((select) => {
+          select.addEventListener('change', (event) => {
+            const email = event.target.getAttribute('data-user-email');
+            const role = event.target.value;
+            const target = S.users.find((user) => normalizeEmail(user.email || '') === normalizeEmail(email));
+            if (!target) return;
+            target.role = role;
+            persistState();
+            renderDashboard();
+          });
+        });
+      } else {
+        const memberName = currentUser.name || `${currentUser.first || ''} ${currentUser.last || ''}`.trim() || 'Member';
+        const userSavings = (S.savings || []).filter((item) => normalizeText(item.user || item.email || '') === normalizeEmail(currentUser.email || '') || normalizePhone(item.phone || '') === normalizePhone(currentUser.phone || '') || normalizeText(item.member || '') === normalizeText(currentUser.name || '')).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const memberLoans = (S.loans || []).filter((item) => normalizeText(item.user || item.email || '') === normalizeEmail(currentUser.email || '') || normalizePhone(item.phone || '') === normalizePhone(currentUser.phone || '') || normalizeText(item.member || '') === normalizeText(currentUser.name || '')).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+        dashboardContent.innerHTML = `
+          <div class="section-box">
+            <h3>Welcome, ${esc(memberName)}</h3>
+            <p>Your SACCO member dashboard is ready. You can review your account status, savings, and loan updates.</p>
+          </div>
+
+          <div class="section-box">
+            <h3>Member Summary</h3>
+            <div class="table-wrap">
+              <table>
+                <tr><th>Member</th><td>${esc(memberName)}</td></tr>
+                <tr><th>Email</th><td>${esc(currentUser.email || '-')}</td></tr>
+                <tr><th>Phone</th><td>${esc(currentUser.phone || '-')}</td></tr>
+                <tr><th>Role</th><td><span class="chip">${esc(currentUser.role || 'Member')}</span></td></tr>
+                <tr><th>Savings</th><td>${formatCurrency(userSavings)}</td></tr>
+                <tr><th>Loans</th><td>${formatCurrency(memberLoans)}</td></tr>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+    };
+
     const regModal = document.getElementById('regModal');
+    const resetModal = document.getElementById('resetModal');
     const registerForm = document.getElementById('registerForm');
+    const resetForm = document.getElementById('resetForm');
     const regMsg = document.getElementById('regMsg');
+    const resetMsg = document.getElementById('resetMsg');
 
-    const openRegModal = () => {
-      regModal.classList.add('open');
-      regModal.setAttribute('aria-hidden', 'false');
-      registerForm.reset();
-      regMsg.textContent = '';
-      regMsg.classList.remove('err');
-    };
+    const openModal = (modal) => { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); };
+    const closeModal = (modal) => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); };
 
-    const closeRegModal = () => {
-      regModal.classList.remove('open');
-      regModal.setAttribute('aria-hidden', 'true');
-      registerForm.reset();
-      regMsg.textContent = '';
-      regMsg.classList.remove('err');
-    };
+    document.getElementById('openReg').addEventListener('click', (event) => { event.preventDefault(); openModal(regModal); });
+    document.getElementById('closeReg').addEventListener('click', () => closeModal(regModal));
+    document.getElementById('cancelReg').addEventListener('click', () => closeModal(regModal));
+    regModal.addEventListener('click', (event) => { if (event.target === regModal) closeModal(regModal); });
 
-    document.getElementById('openReg').addEventListener('click', (event) => {
-      event.preventDefault();
-      openRegModal();
-    });
+    document.getElementById('openReset').addEventListener('click', (event) => { event.preventDefault(); openModal(resetModal); });
+    document.getElementById('closeReset').addEventListener('click', () => closeModal(resetModal));
+    document.getElementById('cancelReset').addEventListener('click', () => closeModal(resetModal));
+    resetModal.addEventListener('click', (event) => { if (event.target === resetModal) closeModal(resetModal); });
 
-    document.getElementById('closeReg').addEventListener('click', closeRegModal);
-    document.getElementById('cancelReg').addEventListener('click', closeRegModal);
-    regModal.addEventListener('click', (event) => {
-      if (event.target === regModal) closeRegModal();
-    });
+    const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
 
     const getUserByLogin = (id, password) => {
       const rawId = normalizeText(id);
       const key = normalizeEmail(rawId);
-      const phone = normalizePhone(rawId);
       const shortKey = key.replace(/@elitesacco\.co\.ug$/, '');
-
+      const phone = normalizePhone(rawId);
       return S.users.find((user) => {
         const userEmail = normalizeEmail(user.email || '');
         const userPhone = normalizePhone(user.phone || '');
-        const pwMatch = String(user.pw || '') === String(password || '');
-        const emailMatches =
-          userEmail === key ||
-          userEmail === `${shortKey}@elitesacco.co.ug` ||
-          userEmail === `${key}@elitesacco.co.ug` ||
-          normalizeEmail(user.name || '') === key;
+        const passwordMatch = String(user.pw || '') === String(password || '');
+        const emailMatches = userEmail === key || userEmail === `${shortKey}@elitesacco.co.ug` || userEmail === `${key}@elitesacco.co.ug` || normalizeEmail(user.name || '') === key;
         const phoneMatches = userPhone === phone;
-        return (emailMatches || phoneMatches) && pwMatch;
+        return (emailMatches || phoneMatches) && passwordMatch;
       });
     };
 
@@ -602,17 +480,19 @@
       event.preventDefault();
       const id = document.getElementById('userId').value;
       const pw = document.getElementById('password').value;
-
       const user = getUserByLogin(id, pw);
+
       if (!user) {
         loginMsg.textContent = 'Invalid login details.';
         loginMsg.classList.add('err');
         return;
       }
 
+      currentUser = user;
       loginMsg.textContent = '';
       loginMsg.classList.remove('err');
       document.body.classList.add('logged-in');
+      renderDashboard();
       persistState();
     });
 
@@ -659,7 +539,7 @@
         return;
       }
 
-      const newUser = {
+      S.users.push({
         name: `${first} ${last}`.trim(),
         first,
         last,
@@ -667,38 +547,85 @@
         phone,
         role: 'Member',
         pw: password
-      };
+      });
 
-      S.users = [...S.users, newUser];
       ensureDefaultAdmin();
       persistState();
-
       regMsg.textContent = 'Account created successfully. You can now log in.';
       regMsg.classList.remove('err');
       form.reset();
-      setTimeout(() => closeRegModal(), 1100);
+      setTimeout(() => closeModal(regModal), 1000);
+    });
+
+    resetForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const id = document.getElementById('resetId').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('newPasswordConfirm').value;
+
+      resetMsg.textContent = '';
+      resetMsg.classList.remove('err');
+
+      if (!id || !newPassword || !confirmPassword) {
+        resetMsg.textContent = 'Please complete all fields.';
+        resetMsg.classList.add('err');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        resetMsg.textContent = 'Password must be at least 6 characters long.';
+        resetMsg.classList.add('err');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        resetMsg.textContent = 'Passwords do not match.';
+        resetMsg.classList.add('err');
+        return;
+      }
+
+      const target = S.users.find((user) => {
+        const emailMatch = normalizeEmail(user.email || '') === normalizeEmail(id) || normalizeEmail(user.email || '') === `${normalizeEmail(id)}@elitesacco.co.ug`;
+        const phoneMatch = normalizePhone(user.phone || '') === normalizePhone(id);
+        return emailMatch || phoneMatch;
+      });
+
+      if (!target) {
+        resetMsg.textContent = 'No account was found for that email or phone.';
+        resetMsg.classList.add('err');
+        return;
+      }
+
+      target.pw = newPassword;
+      persistState();
+      resetMsg.textContent = 'Password reset successfully.';
+      resetForm.reset();
+      setTimeout(() => closeModal(resetModal), 1000);
     });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
+      currentUser = null;
       document.body.classList.remove('logged-in');
       loginForm.reset();
       loginMsg.textContent = '';
       loginMsg.classList.remove('err');
     });
 
-    const memberCount = document.getElementById('memberCount');
-    const loanBook = document.getElementById('loanBook');
-    const savingsTotal = document.getElementById('savingsTotal');
-    const formatCurrency = (value) => 'UGX ' + Number(value || 0).toLocaleString();
+    document.getElementById('refreshUsers').addEventListener('click', () => renderDashboard());
 
-    const updateDashboard = () => {
-      const memberUsers = S.users.filter((user) => !isAdminUser(user));
-      memberCount.textContent = String(memberUsers.length);
-      loanBook.textContent = formatCurrency((S.loans || []).reduce((sum, loan) => sum + Number(loan.amount || 0), 0));
-      savingsTotal.textContent = formatCurrency((S.savings || []).reduce((sum, saving) => sum + Number(saving.amount || 0), 0));
+    const updateMetrics = () => {
+      const memberTotal = memberUsers().length;
+      const savings = (S.savings || []).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+      const loans = (S.loans || []).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+      document.getElementById('memberCount').textContent = String(memberTotal);
+      document.getElementById('loanBook').textContent = formatCurrency(loans);
+      document.getElementById('savingsTotal').textContent = formatCurrency(savings);
     };
 
-    updateDashboard();
+    document.addEventListener('DOMContentLoaded', () => {
+      updateMetrics();
+      if (currentUser) renderDashboard();
+    });
   </script>
 </body>
 </html>
