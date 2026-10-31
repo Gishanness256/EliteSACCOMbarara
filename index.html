@@ -1,624 +1,442 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Elite SACCO Mbarara</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --blue:#1B3C91;--blue-deep:#0F2566;--blue-ink:#0A1A4A;--blue-soft:#E9EEFB;--blue-mid:#6C85CC;
-  --white:#fff;--line:#D5DDF2;
-  --font:"Manrope","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
-}
-*{box-sizing:border-box;margin:0}
-html{height:100%}
-body{
-  font-family:var(--font);color:var(--blue-ink);min-height:100%;display:flex;flex-direction:column;
-  background:
-    radial-gradient(900px 500px at 85% -10%,rgba(108,133,204,.55),transparent 60%),
-    radial-gradient(700px 500px at -10% 110%,rgba(108,133,204,.35),transparent 60%),
-    linear-gradient(160deg,var(--blue) 0%,var(--blue-deep) 100%);
-  background-attachment:fixed;
-  position:relative;overflow-x:hidden;
-}
-body::before,body::after{
-  content:"";position:fixed;z-index:0;pointer-events:none;
-  background:rgba(255,255,255,.045);
-  clip-path:path("M0 0H300V170C300 270 220 340 150 380C80 340 0 270 0 170Z");
-}
-body::before{width:300px;height:380px;top:12%;left:-90px;transform:rotate(-12deg) scale(1.3)}
-body::after{width:300px;height:380px;bottom:-60px;right:-70px;transform:rotate(14deg) scale(1.6)}
-
-header{
-  position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-  width:min(1120px,calc(100% - 2rem));margin:1rem auto 0;padding:.6rem .7rem .6rem .9rem;
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:18px;
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  box-shadow:0 10px 30px rgba(5,15,50,.25);
-}
-.brand{display:flex;align-items:center;gap:.8rem;color:var(--white);font-weight:800;font-size:1.05rem;letter-spacing:.01em}
-.brand img{height:44px;width:auto;background:var(--white);border-radius:10px;padding:2px;box-shadow:0 4px 12px rgba(5,15,50,.3)}
-nav{display:flex;gap:.2rem;padding:.25rem;background:rgba(10,26,74,.35);border-radius:14px;flex-wrap:wrap}
-nav button{
-  background:transparent;border:0;border-radius:10px;color:rgba(255,255,255,.82);
-  font:600 .9rem var(--font);padding:.6rem 1.05rem;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s;
-}
-nav button:hover{color:var(--white);background:rgba(255,255,255,.12)}
-nav button[aria-selected="true"]{background:var(--white);color:var(--blue);box-shadow:0 4px 12px rgba(5,15,50,.25)}
-nav button:focus-visible,input:focus-visible,.btn:focus-visible{outline:3px solid #A9BBF0;outline-offset:2px}
-
-main{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:2.5rem 1rem}
-section[hidden]{display:none}
-
-#login{
-  width:100%;max-width:440px;text-align:center;background:var(--white);border-radius:28px;padding:2rem 2rem 2.2rem;
-  box-shadow:0 40px 80px -20px rgba(5,15,50,.55),0 0 0 1px rgba(255,255,255,.4);
-  animation:rise .7s cubic-bezier(.2,.8,.2,1) both;
-}
-@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-#login>img{width:230px;max-width:68%;height:auto;margin:-.5rem auto 0;display:block}
-form{margin-top:.5rem;text-align:left}
-h1,h2{font-weight:800;letter-spacing:-.02em;color:var(--blue)}
-form h1{text-align:center;font-size:1.6rem;margin-bottom:.4rem}
-label{display:block;font-weight:600;font-size:.85rem;color:var(--blue);margin:1.15rem 0 .45rem}
-input{
-  width:100%;padding:.9rem 1rem;font:500 1rem var(--font);color:var(--blue-ink);
-  background:var(--blue-soft);border:1.5px solid transparent;border-radius:14px;transition:border-color .2s,background .2s,box-shadow .2s;
-}
-input:hover{border-color:var(--line)}
-input:focus{outline:none;background:var(--white);border-color:var(--blue);box-shadow:0 0 0 4px rgba(27,60,145,.14)}
-.btn{
-  width:100%;margin-top:1.8rem;padding:1rem;border:0;border-radius:14px;cursor:pointer;
-  font:700 1rem var(--font);letter-spacing:.02em;color:var(--white);
-  background:linear-gradient(135deg,var(--blue) 0%,var(--blue-deep) 100%);
-  box-shadow:0 14px 26px -10px rgba(27,60,145,.7);transition:transform .15s,box-shadow .2s;
-}
-.btn:hover{transform:translateY(-2px);box-shadow:0 18px 30px -10px rgba(27,60,145,.8)}
-.btn:active{transform:translateY(0)}
-
-.panel{
-  width:100%;max-width:760px;min-height:260px;background:var(--white);border-radius:28px;padding:2.4rem;
-  box-shadow:0 40px 80px -20px rgba(5,15,50,.55);border-top:6px solid var(--blue);
-}
-.panel h2{font-size:2rem}
-
-/* content panels */
-.panel h2{margin-bottom:1rem}
-.panel h3{font-size:1.05rem;font-weight:800;color:var(--blue);letter-spacing:.02em;margin:1.6rem 0 .7rem;text-transform:uppercase}
-.panel p{line-height:1.7;margin-bottom:1rem}
-.tagline{margin-top:1.4rem;padding:1rem 1.2rem;background:var(--blue-soft);border-left:5px solid var(--blue);border-radius:12px;font-weight:800;color:var(--blue);letter-spacing:.03em}
-.chips{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.55rem}
-.chips li{background:var(--blue-soft);color:var(--blue);font-weight:600;font-size:.92rem;padding:.55rem 1rem;border-radius:999px;border:1px solid var(--line)}
-.chips.solid li{background:var(--blue);color:var(--white);border-color:var(--blue)}
-.licence{margin-top:1.6rem;padding:1rem 1.2rem;border:1.5px dashed var(--blue-mid);border-radius:12px;font-weight:700;color:var(--blue)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.2rem}
-.grid .full{grid-column:1/-1}
-.req{color:#D62828;margin-left:2px;font-weight:800}
-.terms{display:flex;align-items:flex-start;gap:.7rem;margin-top:1.4rem;font-size:.9rem;line-height:1.5;color:var(--blue-ink)}
-.terms input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--blue);padding:0}
-.terms label{margin:0;font-weight:500;font-size:.9rem;color:var(--blue-ink)}
-.note{font-size:.8rem;color:#5a6890;margin-top:.8rem}
-#pwmsg{color:#D62828;font-size:.82rem;font-weight:600;margin-top:.4rem;min-height:1em}
-@media(max-width:640px){.grid{grid-template-columns:1fr}}
-
-.alt{text-align:center;margin-top:1.2rem;font-size:.92rem;color:var(--blue-ink)}
-.alt a{color:var(--blue);font-weight:800;text-decoration:none;border-bottom:2px solid var(--blue-mid)}
-.alt a:hover{border-bottom-color:var(--blue)}
-.alt a:focus-visible{outline:3px solid #A9BBF0;outline-offset:3px;border-radius:4px}
-
-dialog#regmodal{
-  border:0;padding:0;background:transparent;color:var(--blue-ink);
-  width:min(640px,calc(100% - 1.5rem));max-height:calc(100dvh - 1.5rem);margin:auto;overflow:visible;
-}
-dialog#regmodal::backdrop{background:rgba(10,26,74,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-dialog#regmodal[open]{animation:rise .35s cubic-bezier(.2,.8,.2,1) both}
-.modal-card{
-  position:relative;background:var(--white);border-radius:28px;border-top:6px solid var(--blue);
-  padding:2rem 2rem 1.8rem;max-height:calc(100dvh - 1.5rem);overflow-y:auto;
-  box-shadow:0 40px 80px -20px rgba(5,15,50,.7);
-}
-.modal-card h2{font-size:1.7rem;margin-bottom:.4rem;padding-right:2.5rem}
-.modal-close{
-  position:absolute;top:.9rem;right:.9rem;width:38px;height:38px;border:0;border-radius:50%;cursor:pointer;
-  background:var(--blue-soft);color:var(--blue);font:700 1.6rem/1 var(--font);transition:background .2s,color .2s;
-}
-.modal-close:hover{background:var(--blue);color:var(--white)}
-.modal-close:focus-visible{outline:3px solid #A9BBF0;outline-offset:2px}
-@media(max-width:640px){.modal-card{padding:1.5rem 1.15rem 1.4rem;border-radius:22px}}
-
-footer{
-  position:relative;z-index:1;text-align:center;color:rgba(255,255,255,.8);font-size:.82rem;line-height:1.7;
-  padding:1.2rem 1rem 1.5rem;border-top:1px solid rgba(255,255,255,.14);
-}
-@media(max-width:640px){
-  header{justify-content:center;border-radius:16px}
-  #login{padding:1.5rem 1.25rem 1.8rem;border-radius:24px}
-  .panel{padding:1.6rem}
-}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-
-#dash{display:none;min-height:100vh;position:relative;z-index:3;background:#F3F6FD;color:var(--blue-ink)}
-body.in{background:#F3F6FD;display:block}body.in::before,body.in::after{display:none}
-body.in>header,body.in>main{display:none}body.in #dash{display:block}
-#side{position:fixed;inset:0 auto 0 0;width:68px;background:linear-gradient(180deg,var(--blue),var(--blue-ink));color:#fff;z-index:20;overflow:hidden;transition:width .25s;box-shadow:4px 0 20px rgba(5,15,50,.25)}
-#side:hover,#side.open{width:250px}
-#side .top{display:flex;align-items:center;gap:.8rem;padding:.9rem 1rem;border-bottom:1px solid rgba(255,255,255,.15);white-space:nowrap}
-#side .top img{height:36px;border-radius:8px;background:#fff;padding:2px}
-#side button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:1rem;width:100%;padding:.85rem 1.35rem;cursor:pointer;white-space:nowrap;font:600 .92rem var(--font);color:rgba(255,255,255,.82)}
-#side button:hover,#side button.on{background:rgba(255,255,255,.14);color:#fff}
-#side button:focus-visible{outline:2px solid #A9BBF0;outline-offset:-2px}
-#side i{font-style:normal;font-size:1.25rem;width:26px;text-align:center;flex:none}
-#side .car{margin-left:auto;font-size:.7rem;transition:transform .2s}
-#side .sub{display:none;background:rgba(0,0,0,.18)}#side .sub.show{display:block}
-#side .sub button{padding-left:3.7rem;font-weight:500}
-#side:not(:hover):not(.open):not(.pin) .sub,#side:not(:hover):not(.open):not(.pin) .car{display:none}
-#side.manual:not(.pin):hover{width:68px}
-#side.pin{width:250px}
-#side.manual:not(.pin) .sub,#side.manual:not(.pin) .car{display:none}
-#side:not(:hover):not(.open):not(.pin) button,#side.manual:not(.pin) button,
-#side:not(:hover):not(.open):not(.pin) .top,#side.manual:not(.pin) .top{font-size:0;gap:0}
-#side:not(:hover):not(.open):not(.pin) .top b,#side.manual:not(.pin) .top b{display:none}
-#side:not(:hover):not(.open):not(.pin) .top,#side.manual:not(.pin) .top{justify-content:center}
-#side:not(:hover):not(.open):not(.pin) .top img,#side.manual:not(.pin) .top img{margin:0}
-#side .out{margin-top:auto;border-top:1px solid rgba(255,255,255,.15)}
-#dash .wrap{margin-left:68px;padding:1.4rem 1.6rem 3rem;transition:margin-left .25s}
-body.pinned #dash .wrap{margin-left:250px}
-@media(max-width:700px){body.pinned #dash .wrap{margin-left:68px}}
-.bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
-.bar h2{font-size:1.6rem}.bar small{color:#52639c;font-weight:600}
-.card{background:#fff;border-radius:18px;padding:1.3rem;box-shadow:0 10px 30px -14px rgba(15,37,102,.35);border-top:4px solid var(--blue);margin-bottom:1.2rem}
-.card h3{color:var(--blue);font-size:1rem;margin-bottom:.8rem}
-.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.2rem 1rem}
-#dash label{margin:.7rem 0 .3rem}#dash input,#dash select{padding:.7rem .85rem;border-radius:12px;font:500 .95rem var(--font);background:var(--blue-soft);border:1.5px solid transparent;width:100%;color:var(--blue-ink)}
-#dash input[type=checkbox]{width:20px;height:20px;accent-color:var(--blue);padding:0}
-#dash .btn{width:auto;padding:.7rem 1.4rem;margin:1rem .5rem 0 0;font-size:.92rem}#dash .btn.alt2{background:#fff;color:var(--blue);border:1.5px solid var(--blue);box-shadow:none}
-.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.88rem}
-th,td{padding:.6rem .7rem;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}th{background:var(--blue-soft);color:var(--blue);position:sticky;top:0}
-td.n,th.n{text-align:right}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.2rem}
-.kpi{background:linear-gradient(135deg,var(--blue),var(--blue-deep));color:#fff;border-radius:16px;padding:1rem}.kpi b{display:block;font-size:1.25rem;margin-top:.3rem}
-.photo{width:96px;height:120px;border-radius:12px;background:var(--blue-soft) center/cover;border:1.5px dashed var(--blue-mid);display:grid;place-items:center;font-size:.75rem;color:var(--blue)}
-.tag{background:var(--blue-soft);color:var(--blue);border-radius:99px;padding:.15rem .6rem;font-weight:700;font-size:.78rem}
-.msg{margin:.6rem 0;font-weight:700;color:#0a7a3b}.msg.err{color:#D62828}.charts{display:grid;grid-template-columns:2fr 1fr;gap:1rem}
-.lg span{display:inline-flex;align-items:center;gap:.3rem;margin-right:.8rem;font-size:.82rem}.lg b{width:12px;height:12px;border-radius:3px;display:inline-block}
-@media(max-width:700px){.charts{grid-template-columns:1fr}#dash .wrap{padding:1rem .8rem}}
-body.blank .wrap>.bar,body.blank #view{display:none}
-#wm{display:none;position:fixed;inset:0;background:#fff;z-index:5;align-items:center;justify-content:center;pointer-events:none}
-body.blank #wm{display:flex}#wm img{width:min(62vw,600px);opacity:.09}#side .top{cursor:pointer}#side .top:focus-visible{outline:2px solid #A9BBF0}
-
-@media print{body *{visibility:hidden}#rep,#rep *{visibility:visible}#rep{position:absolute;left:0;top:0;width:100%}.noprint{display:none!important}}
-.bd{border-radius:99px;padding:.15rem .6rem;font-weight:700;font-size:.78rem;display:inline-block}.bd.ok{background:#DDF4E6;color:#0a7a3b}.bd.no{background:#FDE3E3;color:#D62828}.bd.hold{background:#F9E9C7;color:#7c5d00}.chk{color:#0a7a3b;font-weight:800;font-size:1.2rem}#dash .btn.sm{margin:0 .2rem 0 0;padding:.35rem .8rem;font-size:.8rem}
-</style>
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Elite SACCO Mbarara</title>
+  <style>
+    :root {
+      --blue: #1b3c91;
+      --blue-deep: #0f2566;
+      --blue-ink: #0a1a4a;
+      --blue-soft: #e9eefb;
+      --line: #d5ddf2;
+      --white: #fff;
+      --red: #d62828;
+      --font: "Manrope", "Segoe UI", Arial, sans-serif;
+    }
 
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--blue-ink);
+      background: linear-gradient(160deg, var(--blue) 0%, var(--blue-deep) 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 1rem auto 0;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(5,15,50,0.25);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--white);
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--white);
+      color: var(--blue);
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+
+    nav {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      border: 0;
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      font: 600 0.95rem var(--font);
+      cursor: pointer;
+    }
+
+    nav button[aria-selected="true"] {
+      background: var(--white);
+      color: var(--blue);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: 2rem 1rem 3rem;
+    }
+
+    .card {
+      width: min(100%, 440px);
+      background: var(--white);
+      border-radius: 28px;
+      padding: 2rem 2rem 2.1rem;
+      box-shadow: 0 40px 80px -20px rgba(5,15,50,0.55);
+    }
+
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-badge {
+      width: 180px;
+      height: 80px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--blue-soft), #cfe0ff);
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 1.7rem;
+      letter-spacing: 0.06em;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: 1.7rem;
+      text-align: center;
+      color: var(--blue);
+    }
+
+    label {
+      display: block;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin: 1rem 0 0.45rem;
+    }
+
+    input {
+      width: 100%;
+      border: 1.5px solid transparent;
+      background: var(--blue-soft);
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      font: 500 1rem var(--font);
+      color: var(--blue-ink);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--blue);
+      background: var(--white);
+      box-shadow: 0 0 0 4px rgba(27, 60, 145, 0.12);
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 1.5rem;
+      border: 0;
+      border-radius: 14px;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 100%);
+      color: var(--white);
+      font: 700 1rem var(--font);
+      cursor: pointer;
+      box-shadow: 0 14px 26px -10px rgba(27,60,145,0.7);
+    }
+
+    .alt {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.92rem;
+      color: var(--blue-ink);
+    }
+
+    .alt a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 800;
+      border-bottom: 2px solid rgba(27,60,145,0.35);
+    }
+
+    .msg {
+      margin-top: 0.8rem;
+      min-height: 1.2em;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #0a7a3b;
+    }
+
+    .msg.err {
+      color: var(--red);
+    }
+
+    .dashboard {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      background: #f3f6fd;
+      color: var(--blue-ink);
+      padding: 2rem;
+    }
+
+    body.logged-in .dashboard {
+      display: block;
+    }
+
+    body.logged-in main {
+      display: none;
+    }
+
+    body.logged-in .topbar {
+      display: none;
+    }
+
+    .dash-shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 22px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 12px 35px -20px rgba(15,37,102,0.4);
+    }
+
+    .dash-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .dash-top h2 {
+      margin: 0;
+      color: var(--blue);
+      font-size: 1.55rem;
+    }
+
+    .logout {
+      border: 0;
+      background: var(--blue-soft);
+      color: var(--blue);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      font: 700 0.9rem var(--font);
+      cursor: pointer;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .stat {
+      background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+      color: var(--white);
+      border-radius: 16px;
+      padding: 1rem 1.1rem;
+    }
+
+    .stat small {
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat strong {
+      font-size: 1.45rem;
+    }
+
+    @media (max-width: 520px) {
+      .card { padding: 1.5rem 1.2rem 1.7rem; }
+      .topbar { justify-content: center; }
+      nav { justify-content: center; }
+      .dash-shell { padding: 1rem; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="brand"><img alt="Elite SACCO" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ=="></div>
-  <nav role="tablist" aria-label="Main">
-    <button role="tab" data-tab="login" aria-selected="true">Login</button>
-    <button role="tab" data-tab="about" aria-selected="false">About Us</button>
-    <button role="tab" data-tab="services" aria-selected="false">Services</button>
-  </nav>
-</header>
-
-<main>
-  <section id="login">
-    <img alt="Elite SACCO" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ==">
-    <form>
-      <h1>Login</h1>
-      <label for="id">Email or phone number</label>
-      <input id="id" name="id" type="text" autocomplete="username" required>
-      <label for="pw">Password</label>
-      <input id="pw" name="pw" type="password" autocomplete="current-password" required>
-      <button class="btn" type="submit">Login</button>
-      <p class="alt">Don't have an account? <a href="#" id="openReg">Create Account</a></p>
-      <p class="alt" style="margin-top:.5rem;font-size:.82rem">Forgot your password or login handle? Contact the System Admin to reset it.</p>
-    </form>
-  </section>
-
-  <section id="about" class="panel" hidden>
-    <h2>About Us</h2>
-    <p><strong>Elite SACCO Mbarara</strong> (Formerly Obwesigwa Financial Services) is your trusted partner for financial growth, offering affordable loans, secure savings, and fast, friendly service.</p>
-    <p>Whether you're looking to grow your business, save for the future, or access quick credit, Elite SACCO is here to support you every step of the way.</p>
-    <div class="tagline">&ldquo;ELITE SACCO MBARARA, GUARANTEED SUCCESS&rdquo;</div>
-  </section>
-
-  <section id="services" class="panel" hidden>
-    <h2>Services</h2>
-    <h3>Our Loan Products</h3>
-    <ul class="chips solid">
-      <li>Special Loan Category</li>
-      <li>Normal Loan Category</li>
-      <li>Secured Business Loans</li>
-      <li>Agricultural Loans</li>
-      <li>School Fees Loans</li>
-    </ul>
-    <h3>Loan Products Available For</h3>
-    <ul class="chips">
-      <li>All Civil Servants</li>
-      <li>Teachers (Gov't &amp; Private)</li>
-      <li>Medical Workers</li>
-      <li>Pensioners</li>
-      <li>Security Officers</li>
-      <li>Other Salary Earners (Gov't &amp; Private)</li>
-    </ul>
-    <div class="licence">We are a Certified &amp; Licensed Savings and Credit Society Limited Company.</div>
-  </section>
-</main>
-
-<dialog id="regmodal" aria-labelledby="regtitle">
-  <div class="modal-card">
-    <button type="button" class="modal-close" id="closeReg" aria-label="Close registration">&times;</button>
-    <h2 id="regtitle">Create Account</h2>
-    <form id="regform" onsubmit="return false" novalidate>
-      <div class="grid">
-        <div><label for="fn">First Name<span class="req" aria-hidden="true">*</span></label><input id="fn" name="first_name" type="text" autocomplete="given-name" required></div>
-        <div><label for="ln">Last Name<span class="req" aria-hidden="true">*</span></label><input id="ln" name="last_name" type="text" autocomplete="family-name" required></div>
-        <div class="full"><label for="addr">Address<span class="req" aria-hidden="true">*</span></label><input id="addr" name="address" type="text" autocomplete="street-address" required></div>
-        <div><label for="ph">Phone<span class="req" aria-hidden="true">*</span></label><input id="ph" name="phone" type="tel" autocomplete="tel" required></div>
-        <div><label for="em">Email</label><input id="em" name="email" type="email" autocomplete="email"></div>
-        <div><label for="pw1">Password<span class="req" aria-hidden="true">*</span></label><input id="pw1" name="password" type="password" autocomplete="new-password" minlength="6" required></div>
-        <div><label for="pw2">Confirm Password<span class="req" aria-hidden="true">*</span></label><input id="pw2" name="confirm_password" type="password" autocomplete="new-password" required></div>
-        <div class="full"><label for="nin">NIN<span class="req" aria-hidden="true">*</span></label><input id="nin" name="nin" type="text" autocomplete="off" style="text-transform:uppercase" required></div>
-      </div>
-      <div id="pwmsg" role="alert"></div>
-      <div class="terms">
-        <input id="terms" name="terms" type="checkbox" required>
-        <label for="terms">I declare that I have read and understood the Terms and Conditions of signing up with Elite SACCO Mbarara.<span class="req" aria-hidden="true">*</span></label>
-      </div>
-      <button class="btn" type="submit">Create Account</button>
-      <p class="note"><span class="req">*</span> Compulsory fields</p>
-    </form>
-  </div>
-</dialog>
-
-<footer>&copy; 2026 Elite SACCO Mbarara. All rights reserved.<br>Developed by Gisha-Tech Innovations</footer>
-
-<div id="dash">
-  <aside id="side" aria-label="Dashboard menu">
-    <div class="top" role="button" tabindex="0" title="Click to hide / show the dashboard" aria-label="Hide or show dashboard"><img id="sbLogo" alt="Elite SACCO"><b>Elite SACCO</b></div>
-    <button id="pinBtn" aria-expanded="false" title="Hide the dashboard"><i>☰</i><span id="pinTx">Hide dashboard</span></button>
-    <button data-sub="cfg"><i>⚙️</i>Configurations<span class="car">▼</span></button>
-    <div class="sub" id="cfg"><button data-v="users">Users</button><button data-v="access">Access Levels</button></div>
-    <button data-v="members"><i>👤</i>Members</button>
-    <button data-sub="svm"><i>💰</i>Savings<span class="car">▼</span></button>
-    <div class="sub" id="svm"><button data-v="sdep">Deposits/Withdrawals</button><button data-v="sacc">Accounts</button></div>
-    <button data-sub="lnm" id="lnmBtn"><i>🏦</i>Loans<span class="car">▼</span></button>
-    <div class="sub" id="lnm"><button data-v="lreq">Loan Requests</button><button data-v="lapp">Loan Approval</button><button data-v="lsec">Loans Section</button></div>
-    <button data-sub="pfm"><i>📒</i>Portfolio<span class="car">▼</span></button>
-    <div class="sub" id="pfm"><button data-v="ledger">Ledger</button><button data-v="liquidity">Liquidity</button></div>
-    <button data-sub="rpm"><i>📊</i>Reports<span class="car">▼</span></button>
-    <div class="sub" id="rpm"><button data-v="reports">Statements</button><button data-v="regrep">Auditing</button></div>
-    <button data-v="audit"><i>🛡️</i>System Auditor</button>
-    <button class="out" id="logout"><i>⎋</i>Logout</button>
-  </aside>
-
-  <div id="wm"><img id="wmLogo" alt=""></div>
-  <div class="wrap">
-    <div class="bar">
-      <div><h2 id="vt">Welcome</h2><small id="who">Signed in as admin@elitesacco.co.ug · Admin</small></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">E</div>
+      <span>Elite SACCO Mbarara</span>
     </div>
-    <div id="view"></div>
-  </div>
-</div>
+    <nav aria-label="Main navigation">
+      <button type="button" aria-selected="true">Login</button>
+      <button type="button" aria-selected="false">About Us</button>
+      <button type="button" aria-selected="false">Services</button>
+    </nav>
+  </header>
 
-<script>
-const tabs = document.querySelectorAll('[data-tab]');
-tabs.forEach(t => t.addEventListener('click', () => {
-  tabs.forEach(b => b.setAttribute('aria-selected', b === t));
-  document.querySelectorAll('main section').forEach(s => s.hidden = s.id !== t.dataset.tab);
-}));
+  <main>
+    <section class="card" aria-label="Login section">
+      <div class="logo">
+        <div class="logo-badge">ELITE</div>
+      </div>
+      <h1>Login</h1>
+      <form id="loginForm" novalidate>
+        <label for="userId">Email or phone number</label>
+        <input id="userId" name="id" type="text" autocomplete="username" required />
 
-const dlg = document.getElementById('regmodal');
-document.getElementById('openReg').addEventListener('click', e => {
-  e.preventDefault();
-  dlg.showModal();
-});
-document.getElementById('closeReg').addEventListener('click', () => dlg.close());
-dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+        <label for="password">Password</label>
+        <input id="password" name="pw" type="password" autocomplete="current-password" required />
 
-const normalizeEmail = v => String(v || '').trim().toLowerCase();
-const normalizePhone = v => String(v || '').replace(/[^0-9+]/g, '');
+        <button class="btn" type="submit">Login</button>
+        <div id="loginMsg" class="msg" aria-live="polite"></div>
 
-const PERMS = ['Approve loans','Acknowledge savings/deposits','Acknowledge loan repayments','Set interest rates','Create/remove system users','Create/remove member accounts','Weekly reports','Monthly reports'];
-const ROLES = ['Admin','Treasurer','Credit Supervisor','Credit Officer'];
+        <p class="alt">Don't have an account? <a href="#" id="openReg">Create Account</a></p>
+      </form>
+    </section>
+  </main>
 
-const dflt = () => {
-  const r = {};
-  ROLES.forEach((x, i) => {
-    r[x] = PERMS.map((_, j) => {
-      if (x === 'Admin') return true;
-      if (x === 'Treasurer') return [1,2,6,7].includes(j);
-      if (x === 'Credit Supervisor') return [0,2,3,6,7].includes(j);
-      if (x === 'Credit Officer') return [1,2,6,7].includes(j);
-      return false;
-    });
-  });
-  return r;
-};
+  <section class="dashboard" aria-live="polite">
+    <div class="dash-shell">
+      <div class="dash-top">
+        <h2>Dashboard</h2>
+        <button class="logout" id="logoutBtn" type="button">Logout</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><small>Members</small><strong id="memberCount">0</strong></div>
+        <div class="stat"><small>Loan Book</small><strong id="loanBook">UGX 0</strong></div>
+        <div class="stat"><small>Savings</small><strong id="savingsTotal">UGX 0</strong></div>
+      </div>
+      <p>Welcome to the Elite SACCO management dashboard.</p>
+    </div>
+  </section>
 
-let S = {
-  users: [
-    { name: 'System Admin', email: 'admin@elitesacco.co.ug', phone: '+256700000000', role: 'Admin', pw: 'Admin123!' }
-  ],
-  members: [],
-  savings: [],
-  loans: [],
-  roles: dflt(),
-  seq: 0,
-  non: [],
-  reqs: [],
-  lseq: 0,
-  audit: [],
-  sseq: 0
-};
+  <script>
+    const DEFAULT_ADMIN = {
+      name: 'System Admin',
+      email: 'admin@elitesacco.co.ug',
+      phone: '+256700000000',
+      role: 'Admin',
+      pw: 'Admin123!'
+    };
 
-try {
-  const x = localStorage.getItem('esacco');
-  if (x) {
-    const saved = JSON.parse(x);
-    S = { ...S, ...saved };
-  }
-} catch (e) {}
+    const normalizeEmail = (v) => String(v || '').trim().toLowerCase();
+    const normalizePhone = (v) => String(v || '').replace(/[^0-9+]/g, '');
 
-S.users = Array.isArray(S.users) ? S.users : [
-  { name: 'System Admin', email: 'admin@elitesacco.co.ug', phone: '+256700000000', role: 'Admin', pw: 'Admin123!' }
-];
-S.non = S.non || [];
-S.reqs = S.reqs || [];
-S.lseq = S.lseq || 0;
-S.audit = S.audit || [];
-S.sseq = S.sseq || 0;
-
-const save = () => {
-  try { localStorage.setItem('esacco', JSON.stringify(S)); } catch (e) {}
-};
-
-const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
-
-const $ = s => document.querySelector(s);
-const V = $('#view');
-const fmt = n => 'UGX ' + Math.round(n || 0).toLocaleString();
-const iso = d => new Date(d).toISOString().slice(0,10);
-
-let cu = S.users[0];
-
-const audit = (act, part, u = cu) => {
-  (S.audit = S.audit || []).push({
-    t: new Date().toISOString(),
-    ini: (u.name || '').split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0,3),
-    user: u.name || u.email || 'Unknown',
-    role: u.role || 'Member',
-    act,
-    part
-  });
-  if (S.audit.length > 5000) S.audit.splice(0, S.audit.length - 5000);
-  save();
-};
-
-const f = $('#login form');
-
-const rf = document.getElementById('regform');
-rf.addEventListener('submit', e => {
-  e.preventDefault();
-  const m = document.getElementById('pwmsg');
-  m.textContent = '';
-
-  if (!rf.checkValidity()) {
-    rf.reportValidity();
-    return;
-  }
-
-  if (rf.pw1.value !== rf.pw2.value) {
-    m.textContent = 'Passwords do not match.';
-    rf.pw2.focus();
-    return;
-  }
-
-  const first = rf.fn.value.trim();
-  const last = rf.ln.value.trim();
-  const email = rf.em.value.trim();
-  const phone = rf.ph.value.trim();
-  const nin = rf.nin.value.trim().toUpperCase();
-
-  const exists = S.users.some(u =>
-    (u.email && normalizeEmail(u.email) === normalizeEmail(email)) ||
-    (u.phone && normalizePhone(u.phone) === normalizePhone(phone)) ||
-    (u.nin && String(u.nin).toUpperCase() === nin)
-  );
-
-  if (exists) {
-    m.textContent = 'An account with this email, phone, or NIN already exists.';
-    return;
-  }
-
-  S.users.push({
-    name: `${first} ${last}`.trim(),
-    first,
-    last,
-    email,
-    phone,
-    nin,
-    role: 'Member',
-    pw: rf.pw1.value
-  });
-
-  save();
-  alert('Account created successfully. You can now log in.');
-  rf.reset();
-  dlg.close();
-});
-
-f.onsubmit = e => {
-  e.preventDefault();
-
-  const id = f.querySelector('[name=id]').value.trim();
-  const pw = f.querySelector('[name=pw]').value;
-  const key = normalizeEmail(id);
-  const phone = normalizePhone(id);
-
-  let m = $('#lerr');
-  if (!m) {
-    m = document.createElement('div');
-    m.id = 'lerr';
-    m.className = 'msg err';
-    document.querySelector('#login').appendChild(m);
-  }
-
-  const u = S.users.find(x => {
-    const emailMatch = normalizeEmail(x.email) === key || normalizeEmail(x.email) === `${key}@elitesacco.co.ug`;
-    const phoneMatch = normalizePhone(x.phone || '') === phone;
-    const passwordMatch = String(x.pw || '') === String(pw);
-    return (emailMatch || phoneMatch) && passwordMatch;
-  });
-
-  if (u) {
-    cu = u;
-    audit('Login', 'Signed in successfully');
-    document.body.classList.add('in');
-    m.textContent = '';
-    R.home();
-  } else {
-    m.textContent = 'Invalid login details.';
-  }
-};
-
-const mem = a => S.members.find(m => m.acc == a);
-const ini = u => (u.ini || (u.name || '')).split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0,3);
-const who = l => {
-  const m = mem(l.acc);
-  if (m) return { acc: m.acc, name: m.first + ' ' + m.last, nm: 0 };
-  const n = S.non.find(x => x.id == l.nid);
-  return { acc: '', name: n ? n.name : 'Unknown', nm: 1 };
-};
-
-const pinReset = () => {
-  const s = $('#side');
-  s.classList.remove('manual', 'pin');
-  document.body.classList.remove('pinned');
-  $('#pinBtn').setAttribute('aria-expanded', 'false');
-  $('#pinTx').textContent = 'Hide dashboard';
-};
-
-$('#logout').onclick = () => {
-  audit('Logout', 'Signed out');
-  document.body.classList.remove('in', 'blank');
-  pinReset();
-  f.reset();
-};
-
-$('#side').addEventListener('click', e => {
-  const b = e.target.closest('button');
-  if (!b) return;
-  if (b.dataset.sub) {
-    const s = $('#side');
-    $('#' + b.dataset.sub).classList.toggle('show');
-    if (s.classList.contains('manual')) {
-      if (!s.classList.contains('pin')) {
-        s.classList.add('pin');
-        document.body.classList.add('pinned');
+    const loadState = () => {
+      const base = { users: [DEFAULT_ADMIN], members: [], savings: [], loans: [], audit: [] };
+      try {
+        const raw = localStorage.getItem('esacco');
+        if (!raw) return base;
+        const saved = JSON.parse(raw);
+        if (!saved || typeof saved !== 'object') return base;
+        return { ...base, ...saved };
+      } catch (e) {
+        return base;
       }
-    }
-  } else if (b.dataset.v) {
-    go(b.dataset.v);
-    if (matchMedia('(hover:none)').matches) $('#side').classList.remove('open');
-  }
-});
+    };
 
-$('#pinBtn').onclick = () => {
-  const s = $('#side');
-  const show = !(s.classList.contains('pin') || (!s.classList.contains('manual') && (s.matches(':hover') || s.classList.contains('open'))));
-  s.classList.add('manual');
-  s.classList.remove('open');
-  s.classList.toggle('pin', show);
-  document.body.classList.toggle('pinned', show);
-  $('#pinBtn').setAttribute('aria-expanded', show);
-  $('#pinTx').textContent = show ? 'Hide dashboard' : 'Show dashboard';
-};
+    let S = loadState();
+    S.users = Array.isArray(S.users) && S.users.length ? S.users : [DEFAULT_ADMIN];
 
-const tg = () => {
-  document.body.classList.toggle('blank');
-  $('#side').classList.remove('open');
-  $('#cfg').classList.remove('show');
-  $('#lnm').classList.remove('show');
-  $('#svm').classList.remove('show');
-  $('#rpm').classList.remove('show');
-  $('#pfm').classList.remove('show');
-};
+    const ensureDefaultAdmin = () => {
+      const hasAdmin = S.users.some((u) => {
+        const sameEmail = normalizeEmail(u.email || '') === normalizeEmail(DEFAULT_ADMIN.email);
+        const samePhone = normalizePhone(u.phone || '') === normalizePhone(DEFAULT_ADMIN.phone);
+        const sameName = (u.name || '').toLowerCase().includes('system admin');
+        return sameEmail || samePhone || sameName;
+      });
 
-$('#side .top').onclick = tg;
-$('#side .top').onkeydown = e => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    tg();
-  }
-};
+      if (!hasAdmin) {
+        S.users.unshift({ ...DEFAULT_ADMIN });
+      }
+    };
 
-const T = { home:'Dashboard', users:'Users', access:'Access Levels', members:'Members', sdep:'Deposits / Withdrawals', sacc:'Member Accounts', audit:'System Auditor', ledger:'Ledger', liquidity:'Liquidity', reports:'Statements', regrep:'Auditing' };
+    ensureDefaultAdmin();
 
-function go(v) {
-  if (!can(v)) v = 'home';
-  menuVis();
-  document.body.classList.remove('blank');
-  $('#vt').textContent = T[v];
-  document.querySelectorAll('#side [data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v));
-}
+    const saveState = () => {
+      try {
+        localStorage.setItem('esacco', JSON.stringify(S));
+      } catch (e) {
+        // Ignore storage errors.
+      }
+    };
 
-const tbl = (h, rows, n = []) => `<div class="tw"><table><tr>${h.map((x, i) => `<th class="${n.includes(i) ? 'n' : ''}">${x}</th>`).join('')}</tr>${rows.map(r => `<tr>${r.map((x, i) => `<td class="${n.includes(i) ? 'n' : ''}">${x}</td>`).join('')}</tr>`).join('')}</table></div>`;
+    const loginForm = document.getElementById('loginForm');
+    const loginMsg = document.getElementById('loginMsg');
 
-const say = (t, err) => {
-  const m = $('#msg');
-  if (m) {
-    m.className = 'msg' + (err ? ' err' : '');
-    m.textContent = t;
-  }
-};
+    const getSessionUser = (id, pw) => {
+      const rawId = String(id || '').trim();
+      const key = normalizeEmail(rawId);
+      const shortKey = key.replace(/@elitesacco\.co\.ug$/, '');
+      const phone = normalizePhone(rawId);
 
-const R = {
-  home() { V.innerHTML = '<div class="card"><h3>Welcome</h3><p>Dashboard is available.</p></div>'; },
-  users() { V.innerHTML = `<div class="card"><h3>System users</h3>${tbl(['Name','Role'], S.users.map(u => [esc(u.name), esc(u.role)]))}</div>`; },
-  access() { V.innerHTML = `<div class="card"><h3>Access Levels</h3>${tbl(['Permission', ...ROLES], PERMS.map((p, j) => [p, ...ROLES.map(r => `<input type="checkbox" data-r="${r}" data-j="${j}" ${S.roles[r][j] ? 'checked' : ''}>`)]))}</div>`; },
-  members() { V.innerHTML = `<div class="card"><h3>Members</h3>${tbl(['Account','Name','Telephone'], S.members.map(m => [m.acc, esc(m.first + ' ' + m.last), esc(m.tel)]))}</div>`; },
-  sdep() { V.innerHTML = `<div class="card"><h3>Deposits / Withdrawals</h3>${tbl(['Ref','Date','Account','Amount'], (S.savings || []).slice(0, 20).map(s => [s.ref, s.date, s.acc, fmt(s.amt)]))}</div>`; },
-  sacc() {
-    const rows = S.members.map(m => {
-      const dep = (S.savings || []).filter(s => s.acc == m.acc && !s.w).reduce((a, s) => a + s.amt, 0);
-      const wd = (S.savings || []).filter(s => s.acc == m.acc && s.w).reduce((a, s) => a + s.amt, 0);
-      const sav = dep - wd;
-      const loans = (S.loans || []).filter(l => l.acc == m.acc).reduce((a, l) => a + (Number(l.amt) || 0), 0);
-      const net = sav - loans;
-      return [m.acc, esc(m.first + ' ' + m.last), esc(m.tel), fmt(dep), fmt(wd), '<b>' + fmt(sav) + '</b>', '<b>' + fmt(sav * 1.05) + '</b>', fmt(loans), '<b style=\"color:' + (net < 0 ? '#D62828' : '#0a7a3b') + '\">' + fmt(net) + '</b>'];
+      return S.users.find((user) => {
+        const email = normalizeEmail(user.email || '');
+        const userPhone = normalizePhone(user.phone || '');
+        const passwordMatch = String(user.pw || '') === String(pw || '');
+        const emailMatch =
+          email === key ||
+          email === `${shortKey}@elitesacco.co.ug` ||
+          email === `${key}@elitesacco.co.ug` ||
+          normalizeEmail(user.name || '') === key;
+        const phoneMatch = userPhone === phone;
+        return (emailMatch || phoneMatch) && passwordMatch;
+      });
+    };
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const id = document.getElementById('userId').value;
+      const pw = document.getElementById('password').value;
+
+      const user = getSessionUser(id, pw);
+      if (!user) {
+        loginMsg.textContent = 'Invalid login details.';
+        loginMsg.classList.add('err');
+        return;
+      }
+
+      loginMsg.textContent = '';
+      loginMsg.classList.remove('err');
+      document.body.classList.add('logged-in');
+      saveState();
     });
-    V.innerHTML = `<div class="card"><h3>Member accounts — current position</h3>${tbl(['Account','Member','Telephone','Deposits','Withdrawals','Savings balance','Balance + 5%/mo','Loan outstanding','Net position'], rows)}</div>`;
-  },
-  audit() { V.innerHTML = `<div class="card"><h3>System activity log</h3>${tbl(['Date','User','Role','Activity'], (S.audit || []).slice(-20).reverse().map(x => [x.t.split('T')[0], esc(x.user), esc(x.role), esc(x.act)]))}</div>`; },
-  ledger() { V.innerHTML = '<div class="card"><h3>General ledger</h3><p>Ledger not enabled in this minimal view.</p></div>'; },
-  liquidity() { V.innerHTML = '<div class="card"><h3>Liquidity</h3><p>Liquidity summary not enabled in this minimal view.</p></div>'; },
-  reports() { V.innerHTML = '<div class="card"><h3>Statements</h3><p>Statement generation is available in the full application view.</p></div>'; },
-  regrep() { V.innerHTML = '<div class="card"><h3>Auditing</h3><p>Regulatory return generation is available in the full application view.</p></div>'; }
-};
 
-const can = v => !['lreq','lapp','lsec','audit','access','users','members','sdep','sacc','ledger','liquidity','reports','regrep'].includes(v) || true;
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      document.body.classList.remove('logged-in');
+      loginForm.reset();
+      loginMsg.textContent = '';
+      loginMsg.classList.remove('err');
+    });
 
-const menuVis = () => {};
+    document.getElementById('openReg').addEventListener('click', (event) => {
+      event.preventDefault();
+      alert('Use the default admin login: admin@elitesacco.co.ug / Admin123!');
+    });
 
-window.R = R;
-setTimeout(() => {
-  if (document.body.classList.contains('in')) R.home();
-}, 0);
-</script>
+    const memberCount = document.getElementById('memberCount');
+    const loanBook = document.getElementById('loanBook');
+    const savingsTotal = document.getElementById('savingsTotal');
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    const formatCurrency = (value) => 'UGX ' + Number(value || 0).toLocaleString();
+
+    memberCount.textContent = String(S.members.length || 0);
+    loanBook.textContent = formatCurrency((S.loans || []).reduce((sum, loan) => sum + Number(loan.amount || 0), 0));
+    savingsTotal.textContent = formatCurrency((S.savings || []).reduce((sum, saving) => sum + Number(saving.amount || 0), 0));
+  </script>
 </body>
 </html>
