@@ -864,12 +864,67 @@ lsec(){
   :canPay?`<h3>Record payment</h3><div class="row"><div><label>Payment type</label><select id="pt"><option value="inst">Installment</option><option value="lump">Lump sum</option><option value="full">Clear full balance</option></select></div><div><label>Amount (UGX)</label><input id="pam" type="number" min="1" value="${inst||''}"></div><div><label>Date</label><input id="pdt" type="date" value="${today()}" min="${l.date}" max="${today()}"></div></div><button class="btn" id="pb">Record payment</button>`:'<p class="note">You do not have permission to record repayments.</p>'}
   <div id="dm" class="msg ${pm.err?'err':''}">${esc(pm.t||'')}</div><h3>Repayment history</h3>${tbl(['Date','Type','Principal paid','Interest paid','Balance after','By'],hist,[2,3,4])}</div>`;
   if(!done&&canPay){const fill=()=>{const f=$('#pt').value=='full';$('#pam').readOnly=f;if(f)$('#pam').value=Math.ceil(bal(l,new Date($('#pdt').value||today())).b)};$('#pt').onchange=$('#pdt').onchange=fill;
-   $('#pb').onclick=()=>{const t=$('#pt').value,d=$('#pdt').value;if(!d||d<l.date||d>today())return sd('Choose a valid date (not before disbursement, not in the future).',1);
-    const last=(l.reps||[]).reduce((m,x)=>x.date>m?x.date:m,'');if(last&&d<last)return sd('Date cannot be earlier than the last recorded payment ('+last+').',1);
-    const due=Math.ceil(bal(l,new Date(d)).b),a=t=='full'?due:num($('#pam').value);if(a<=0)return sd('Enter an amount.',1);if(a>due)return sd('Amount exceeds the balance due on that date ('+fmt(due)+').',1);
-    (l.reps=l.reps||[]).push({date:d,amt:a,type:t=='full'?'Full settlement':t=='lump'?'Lump sum':'Installment',ini:me()});audit('Loan repayment',lref(l,sel)+' — '+who(l).name+' paid UGX '+Math.round(a).toLocaleString()+' ('+(t=='full'?'full settlement':t=='lump'?'lump sum':'installment')+') dated '+d);save();
-    pm={t:bal(l).b<.5?'Payment recorded. Loan fully cleared ✔':'Payment of '+fmt(a)+' recorded.'};drawT();drawD()}}};
- const sd=(t,e)=>{const m=$('#dm');m.className='msg'+(e?' err':'');m.textContent=t};
+   $('#pb').onclick = async () => {
+  const loanIndex = sel;
+  const loan = S.loans[loanIndex];
+  if (!loan) return say('Select a valid loan.', 1);
+
+  const serverLoanId = Number(loan.serverId ?? loan.id);
+  if (!serverLoanId) {
+    return say('This loan has not been loaded from the backend yet. Refresh the list first.', 1);
+  }
+
+  const t = $('#pt').value;
+  const d = $('#pdt').value;
+  const a = t == 'full' ? Math.ceil(bal(loan, new Date(d || today())).b) : num($('#pam').value);
+
+  if (!d || d < loan.date || d > today()) {
+    return sd('Choose a valid date (not before disbursement, not in the future).', 1);
+  }
+
+  if (a <= 0) return sd('Enter an amount.', 1);
+
+  const dueOnDate = Math.ceil(bal(loan, new Date(d)).b);
+  if (a > dueOnDate) {
+    return sd('Amount exceeds the balance due on that date (' + fmt(dueOnDate) + ').', 1);
+  }
+
+  const paymentType = t === 'full' ? 'Full settlement' : (t === 'lump' ? 'Lump sum' : 'Installment');
+
+  try {
+    const res = await API.loans.repay(String(serverLoanId), {
+      amount: a,
+      payment_date: d,
+      payment_type: paymentType
+    });
+
+    const repayment = res && res.repayment ? res.repayment : {
+      amount: a,
+      payment_date: d,
+      payment_type: paymentType
+    };
+
+    (loan.reps = loan.reps || []).push({
+      date: d,
+      amt: a,
+      t: paymentType,
+      ini: me()
+    });
+
+    audit('Loan repayment',
+      lref(loan, loanIndex) + ' — ' + who(loan).name + ' paid UGX ' + Math.round(a).toLocaleString()
+    );
+    save();
+    pm = {
+      t: bal(loan).b < 0.5 ? 'Payment recorded. Loan fully cleared ✔' : 'Payment of ' + fmt(a) + ' recorded.'
+    };
+    drawT();
+    drawD();
+  } catch (err) {
+    sd(err && err.message ? err.message : 'Payment could not be recorded.', 1);
+  }
+};
+    const sd=(t,e)=>{const m=$('#dm');m.className='msg'+(e?' err':'');m.textContent=t};
  $('#lf').onchange=e=>{flt=e.target.value;drawT()};$('#ls').oninput=e=>{qs=e.target.value.trim().toLowerCase();drawT()};
  const file=()=>'elite-sacco-loans-'+flt+'-'+today();
  $('#ex1').onclick=()=>{const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([LH,...lrows(list())]),'Loans');audit('Loans exported','Exported loans to Excel ('+flt+')');XLSX.writeFile(wb,file()+'.xlsx')};
