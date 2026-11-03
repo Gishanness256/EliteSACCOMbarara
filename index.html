@@ -323,6 +323,7 @@ rf.addEventListener('submit',e=>{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="public/js/api.js"></script>
+<script>
 (()=>{
 /* ---------- API integration setup ---------- */
 API.configure({
@@ -372,6 +373,237 @@ const toServerRepayment = (loanServerId, amount, paymentDate, paymentType) => ({
   payment_date: paymentDate,
   payment_type: paymentType || 'Installment'
 });
+
+const $ = s => document.querySelector(s),
+      V = $('#view')
+      fmt = n => 'UGX ' + Math.round(n || 0).toLocaleString(),
+        iso = d => new Date(d).toISOString().slice(0, 10);
+
+  const PERMS = ['Approve loans','Acknowledge savings/deposits','Acknowledge loan repayments','Set interest rates','Create/remove system users','Create/remove member accounts','Weekly reports','Monthly reports','Annual reports'];
+  const ROLES = ['Admin','Treasurer','Credit Supervisor','Credit Officer'];
+
+  const dflt = () => {
+    const r = {};
+    ROLES.forEach((x, i) =>
+      r[x] = PERMS.map((_, j) =>
+        x == 'Admin' ||
+        (x == 'Treasurer' && [1,2,6,7,8].includes(j)) ||
+        (x == 'Credit Supervisor' && [0,2,3,6,7].includes(j)) ||
+        (x == 'Credit Officer' && [1,2,6,7].includes(j))
+      )
+    );
+    return r;
+  };
+
+  let S = {
+    users: [{ name: 'System Admin', email: 'admin@elitesacco.co.ug', role: 'Admin' }],
+    members: [],
+    savings: [],
+    loans: [],
+    roles: dflt(),
+    seq: 0,
+    non: []
+  };
+
+  try {
+    const x = localStorage.getItem('esacco');
+    if (x) S = JSON.parse(x);
+  } catch (e) {}
+
+  S.non = S.non || [];
+  S.reqs = S.reqs || [];
+  S.lseq = S.lseq || 0;
+  S.audit = S.audit || [];
+  S.sseq = S.sseq || 0;
+
+  const save = () => {
+    try { localStorage.setItem('esacco', JSON.stringify(S)); } catch (e) {}
+  };
+
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+  const mem = a => S.members.find(m => m.acc == a);
+  const ini = u => u.ini || (u.name || '').split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0,3);
+  let cu = S.users[0];
+  const me = () => ini(cu);
+  const isAdmin = () => cu.role == 'Admin';
+  const dd = x => /^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(x) ? String(x).replace('T',' ') : iso(x);
+  const audit = (act, part, u) => {
+    u = u || cu;
+    (S.audit = S.audit || []).push({
+      t: new Date().toISOString(),
+      ini: ini(u),
+      user: u.name,
+      role: u.role,
+      act,
+      part
+    });
+    if (S.audit.length > 5000) S.audit.splice(0, S.audit.length - 5000);
+    save();
+  };
+
+  const who = l => {
+    const m = mem(l.acc);
+    if (m) return { acc: m.acc, name: m.first + ' ' + m.last, nm: 0 };
+    const n = S.non.find(x => x.id == l.nid);
+    return { acc: '', name: n ? n.name : 'Unknown', nm: 1 };
+  };
+
+  const nmv = w => w.nm ? `<i>${esc(w.name)}</i>` : esc(w.name);
+  const mopts = () => S.members.map(m => `<option value="${m.acc}">${m.acc} — ${esc(m.first)} ${esc(m.last)}</option>`).join('');
+
+  // login
+  const f = $('#login form');
+  f.onsubmit = e => {
+    e.preventDefault();
+
+    const id = f.querySelector('[name=id]').value.trim().toLowerCase();
+    const pw = f.querySelector('[name=pw]').value;
+    let m = $('#lerr');
+
+    if (!m) {
+      m = document.createElement('p');
+      m.id = 'lerr';
+      m.style.cssText = 'color:#D62828;font-weight:700;margin-top:1rem;text-align:center';
+      f.appendChild(m);
+    }
+
+    const u = S.users.find(x =>
+      (x.email.toLowerCase() == id || x.email.toLowerCase() == id + '@elitesacco.co.ug') &&
+      (x.pw ? x.pw == pw : (x.role == 'Admin' && pw == 'Admin'))
+    );
+
+    if (u) {
+      cu = u;
+      audit('Login', 'Signed in successfully');
+      m.textContent = '';
+      document.body.classList.add('in');
+      $('#who').textContent = 'Signed in as ' + u.email + ' · ' + u.role;
+      $('#sbLogo').src = document.querySelector('.brand img').src;
+      $('#wmLogo').src = document.querySelector('#login>img').src;
+      go('home');
+    } else {
+      audit('Failed login', 'Failed sign-in attempt for "' + id + '"', { name: id || 'unknown', role: '—', ini: '—' });
+      m.textContent = 'Invalid email or password.';
+    }
+  };
+
+  $('#logout').onclick = () => {
+    audit('Logout', 'Signed out');
+    document.body.classList.remove('in', 'blank');
+    pinReset();
+    f.reset();
+  };
+
+  // sidebar
+  $('#side').addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+
+    if (b.dataset.sub) {
+      const s = $('#side');
+      $('#' + b.dataset.sub).classList.toggle('show');
+      if (s.classList.contains('manual')) {
+        if (!s.classList.contains('pin')) {
+          s.classList.add('pin');
+          document.body.classList.add('pinned');
+          $('#pinTx').textContent = 'Hide dashboard';
+          $('#pinBtn').setAttribute('aria-expanded', 'true');
+          $('#pinBtn').title = 'Hide the dashboard';
+        }
+      } else {
+        s.classList.add('open');
+      }
+    } else if (b.dataset.v) {
+      go(b.dataset.v);
+      if (matchMedia('(hover:none)').matches) $('#side').classList.remove('open');
+    }
+  });
+
+  const pinReset = () => {
+    const s = $('#side');
+    s.classList.remove('manual', 'pin');
+    document.body.classList.remove('pinned');
+    $('#pinBtn').setAttribute('aria-expanded', 'false');
+    $('#pinTx').textContent = 'Hide dashboard';
+    $('#pinBtn').title = 'Hide the dashboard';
+    s.classList.remove('open');
+  };
+
+  $('#pinBtn').onclick = () => {
+    const s = $('#side');
+    const show = !(s.classList.contains('pin') || (!s.classList.contains('manual') && (s.matches(':hover') || s.classList.contains('open'))));
+    s.classList.add('manual');
+    s.classList.remove('open');
+    s.classList.toggle('pin', show);
+    document.body.classList.toggle('pinned', show);
+    $('#pinBtn').setAttribute('aria-expanded', show);
+    $('#pinTx').textContent = show ? 'Hide dashboard' : 'Show dashboard';
+    $('#pinBtn').title = show ? 'Hide the dashboard' : 'Show the dashboard';
+    if (!show) s.querySelectorAll('.sub').forEach(el => el.classList.remove('show'));
+  };
+
+  const tg = () => {
+    document.body.classList.toggle('blank');
+    $('#side').classList.remove('open');
+    $('#cfg').classList.remove('show');
+    $('#lnm').classList.remove('show');
+    $('#svm').classList.remove('show');
+    $('#pfm').classList.remove('show');
+    $('#rpm').classList.remove('show');
+  };
+
+  $('#side .top').onclick = tg;
+  $('#side .top').onkeydown = e => {
+    if (e.key == 'Enter' || e.key == ' ') {
+      e.preventDefault();
+      tg();
+    }
+  };
+
+  const T = {
+    home: 'Dashboard',
+    users: 'Users',
+    access: 'Access Levels',
+    members: 'Members',
+    sdep: 'Deposits / Withdrawals',
+    sacc: 'Member Accounts',
+    audit: 'System Auditor',
+    ledger: 'Ledger',
+    liquidity: 'Liquidity — Portfolio',
+    reports: 'Statements',
+    regrep: 'Auditing — Regulatory Returns',
+    lreq: 'Loan Requests',
+    lapp: 'Loan Approval',
+    lsec: 'Loans Section'
+  };
+
+  function go(v) {
+    if (!can(v)) v = 'home';
+    menuVis();
+    document.body.classList.remove('blank');
+    $('#vt').textContent = T[v];
+    document.querySelectorAll('#side [data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+    if (v == 'home') $('#cfg').classList.add('show');
+    if (v == 'sdep' || v == 'sacc') $('#svm').classList.add('show');
+    if (v == 'reports' || v == 'regrep') $('#rpm').classList.add('show');
+    if (v == 'ledger' || v == 'liquidity') $('#pfm').classList.add('show');
+    R[v]();
+  }
+
+  const menuVis = () => {
+    let any = 0;
+    document.querySelectorAll('#lnm [data-v]').forEach(b => {
+      const ok = can(b.dataset.v);
+      b.style.display = ok ? '' : 'none';
+      if (ok) any = 1;
+    });
+    $('#lnmBtn').style.display = any ? '' : 'none';
+  };
+
+  const can = v => !LA[v] || LA[v].includes(cu.role);
+})();
+</script>
+  
 API.configure({
   baseUrl: '/api/v1',
   storage: 'session'
