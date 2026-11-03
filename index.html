@@ -460,10 +460,57 @@ members(){V.innerHTML=`<div class="card"><h3 id="mh">Add member</h3><div class="
  $('#pf').onchange=e=>{const fl=e.target.files[0];if(!fl)return;const r=new FileReader();r.onload=()=>{photo=r.result;$('#ph').style.backgroundImage=`url(${photo})`;$('#ph').textContent=''};r.readAsDataURL(fl)};
  $('#mc').onclick=R.members;
  V.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{ed=mem(b.dataset.e);$('#mh').textContent='Edit member';$('#mf').value=ed.first;$('#ml').value=ed.last;$('#md').value=ed.dob;$('#mg').value=ed.acc[3];$('#mg').disabled=true;$('#ma').value=ed.addr;$('#mn').value=ed.nin;$('#mt').value=ed.tel;$('#me').value=ed.email||'';photo=ed.photo||'';if(photo){$('#ph').style.backgroundImage=`url(${photo})`;$('#ph').textContent=''}upd();scrollTo(0,0)});
- $('#ms').onclick=()=>{const v=id=>$(id).value.trim();if(!v('#mf')||!v('#ml')||!v('#md')||!v('#ma')||!v('#mn')||!v('#mt'))return say('Please fill in all required fields.',1);
-  const o={first:v('#mf'),last:v('#ml'),dob:v('#md'),addr:v('#ma'),nin:v('#mn').toUpperCase(),tel:v('#mt'),email:v('#me'),photo};
-  if(ed)Object.assign(ed,o);else{S.seq++;S.members.push({acc:`ES-${$('#mg').value} ${String(S.seq).padStart(6,'0')}`,...o})}save();const a=ed?ed.acc:S.members.at(-1).acc;audit(ed?'Member updated':'Member created',(ed?'Updated':'Registered')+' member '+a+' — '+o.first+' '+o.last);R.members();say('Saved. Account number: '+a)}},
-sdep(){const ms=[...Array(12)].map((_,i)=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-11+i);return d});const key=d=>d.getFullYear()+'-'+d.getMonth();
+ $('#ms').onclick = async () => {
+  const v = id => $(id).value.trim();
+
+  if (!v('#mf') || !v('#ml') || !v('#md') || !v('#ma') || !v('#mn') || !v('#mt')) {
+    return say('Please fill in all required fields.', 1);
+  }
+
+  const payload = {
+    first_name: v('#mf'),
+    last_name: v('#ml'),
+    gender: $('#mg').value,
+    date_of_birth: v('#md'),
+    address: v('#ma'),
+    nin: v('#mn').toUpperCase(),
+    telephone: v('#mt'),
+    email: v('#me'),
+    photo
+  };
+
+  try {
+    const { member } = await API.members.create(payload);
+
+    const record = {
+      acc: member.account_number,
+      first: member.first_name,
+      last: member.last_name,
+      dob: member.date_of_birth || '',
+      addr: member.address || '',
+      nin: member.nin || '',
+      tel: member.telephone || '',
+      email: member.email || '',
+      photo: member.photo || '',
+      gender: (member.gender || 'F').toUpperCase(),
+      serverId: member.id
+    };
+
+    if (ed) {
+      Object.assign(ed, record);
+    } else {
+      S.members.push(record);
+    }
+
+    save();
+    audit(ed ? 'Member updated' : 'Member created', `${record.acc} — ${record.first} ${record.last}`);
+    R.members();
+    say(ed ? 'Member updated successfully.' : 'Member created successfully.');
+  } catch (err) {
+    say(err && err.message ? err.message : 'Failed to save member.', 1);
+  }
+};
+ sdep(){const ms=[...Array(12)].map((_,i)=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-11+i);return d});const key=d=>d.getFullYear()+'-'+d.getMonth();
  const now=new Date(),loc=new Date(now-now.getTimezoneOffset()*6e4).toISOString().slice(0,16),canRec=!!(S.roles[cu.role]&&S.roles[cu.role][1]);
  const recent=[...S.savings].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,25);
  V.innerHTML=`<div class="card"><h3>Record a member's deposit or withdrawal request</h3>${canRec?`<div class="row"><div><label>Member (account)</label><select id="sa"><option value="">— select member —</option>${mopts()}</select></div><div><label>Request type</label><select id="sk"><option value="d">Deposit</option><option value="w">Withdrawal</option></select></div><div><label>Amount (UGX)</label><input id="sm" type="number" min="1"></div><div><label>Date & time</label><input id="sd" type="datetime-local" value="${loc}"></div><div><label>Channel</label><select id="sc"><option>Counter / Cash</option><option>Mobile money</option><option>Bank transfer</option><option>Salary deduction</option><option>Agent</option></select></div><div><label>Slip / receipt / reference no.</label><input id="sr"></div><div><label>Remarks</label><input id="srm"></div></div><p class="note" id="sbal">Select a member to see their current savings balance.</p><button class="btn" id="ss">Save deposit</button>`:'<p class="note">You do not have permission to record savings transactions.</p>'}<div id="msg" class="msg"></div>${canRec?`<label>Upload past savings (.xlsx, .xls or .csv — columns: account, date, amount, type, channel, slip no., remarks)</label><input type="file" id="su" accept=".csv,.xls,.xlsx"><div class="noprint"><button class="btn alt2" id="st1" type="button">Download import template (Excel)</button><button class="btn alt2" id="st2" type="button">Download import template (CSV)</button></div><p class="note">Type is <b>Deposit</b> or <b>Withdrawal</b>. Date format: YYYY-MM-DD (optionally with time, e.g. 2026-03-15 09:30). Account must match an existing member account number.</p>`:''}</div>
