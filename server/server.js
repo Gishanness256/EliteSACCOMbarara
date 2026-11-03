@@ -174,29 +174,20 @@ function query(text, params) {
 // --- Express app ---------------------------------------------------------
 const express = require('express');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-const rootDir = path.join(__dirname, '..');
-const dataDir = path.join(__dirname, 'data');
-const dbPath = path.join(dataDir, 'elite_sacco.db');
-
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
+//
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const db = new sqlite3.Database(dbPath);
+
 function ensureDatabase() {
-  return new Promise((resolve, reject) => {
+  //...
     db.serialize(() => {
       db.run(`
         CREATE TABLE IF NOT EXISTS users (
