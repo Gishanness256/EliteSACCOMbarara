@@ -519,13 +519,60 @@ members(){V.innerHTML=`<div class="card"><h3 id="mh">Add member</h3><div class="
  if(canRec){
   const bl=()=>{const a=$('#sa').value;$('#sbal').textContent=a?'Current savings balance: '+fmt(sv(a)):'Select a member to see their current savings balance.'};
   $('#sa').onchange=bl;$('#sk').onchange=()=>{$('#ss').textContent='Save '+($('#sk').value=='w'?'withdrawal':'deposit')};
-  $('#ss').onclick=()=>{const a=$('#sa').value,m=num($('#sm').value),w=$('#sk').value=='w';
-   if(!a||m<=0||!$('#sd').value)return say('Choose a member, amount and date.',1);
-   if(w&&m>sv(a))return say('Withdrawal exceeds the savings balance ('+fmt(sv(a))+').',1);
-   S.sseq=(S.sseq||0)+1;const ref='SV-'+String(S.sseq).padStart(6,'0'),mm=mem(a),sl=$('#sr').value.trim();
-   S.savings.push({acc:a,amt:m,date:$('#sd').value,w,ini:me(),ref,ch:$('#sc').value,slip:sl,rm:$('#srm').value.trim()});
-   audit(w?'Savings withdrawal':'Savings deposit',ref+' — '+a+' '+(mm?mm.first+' '+mm.last:'')+', UGX '+Math.round(m).toLocaleString()+' via '+$('#sc').value+(sl?' (slip '+sl+')':''));
-   save();R.sdep();say('Transaction '+ref+' recorded.')};
+ $('#ss').onclick = async () => {
+  const a = $('#sa').value;
+  const m = num($('#sm').value);
+  const w = $('#sk').value == 'w';
+
+  if (!a || m <= 0 || !$('#sd').value) {
+    return say('Choose a member, amount and date.', 1);
+  }
+
+  if (w && m > sv(a)) {
+    return say('Withdrawal exceeds the savings balance (' + fmt(sv(a)) + ').', 1);
+  }
+
+  const payload = {
+    account_number: a,
+    direction: w ? 'Withdrawal' : 'Deposit',
+    amount: m,
+    occurred_at: $('#sd').value,
+    channel: $('#sc').value,
+    slip_number: $('#sr').value.trim(),
+    remarks: $('#srm').value.trim()
+  };
+
+  try {
+    const { transaction } = await API.savings.create(payload);
+
+    const mm = mem(a);
+    const rec = {
+      acc: a,
+      amt: m,
+      date: $('#sd').value,
+      w,
+      ini: me(),
+      ref: transaction.reference,
+      ch: transaction.channel || $('#sc').value,
+      slip: transaction.slip_number || $('#sr').value.trim(),
+      rm: transaction.remarks || $('#srm').value.trim(),
+      serverId: transaction.id
+    };
+
+    S.savings.push(rec);
+    audit(w ? 'Savings withdrawal' : 'Savings deposit',
+      rec.ref + ' — ' + a + ' ' + (mm ? mm.first + ' ' + mm.last : '') +
+      ', UGX ' + Math.round(m).toLocaleString() + ' via ' + $('#sc').value +
+      (rec.slip ? ' (slip ' + rec.slip + ')' : '')
+    );
+    save();
+    R.sdep();
+    say('Transaction ' + rec.ref + ' recorded.');
+  } catch (err) {
+    say(err && err.message ? err.message : 'Failed to record savings transaction.', 1);
+  }
+};
+  save();R.sdep();say('Transaction '+ref+' recorded.')};
   const SH=['Account','Date','Amount','Type','Channel','Slip No.','Remarks'],ex=S.members[0]?S.members[0].acc:'ES-F 000001',SR=[[ex,'2026-03-15',50000,'Deposit','Counter / Cash','SLP-001','Monthly savings'],[ex,'2026-04-02',20000,'Withdrawal','Mobile money','MM-778','Emergency withdrawal']];
   $('#st1').onclick=()=>{const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet([SH,...SR]);ws['!cols']=SH.map(()=>({wch:20}));XLSX.utils.book_append_sheet(wb,ws,'Savings');
    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Column','Required','Notes'],['Account','Yes','Existing member account number, e.g. '+ex],['Date','Yes','YYYY-MM-DD (optionally with time HH:MM)'],['Amount','Yes','Positive number in UGX, no currency symbol'],['Type','Yes','Deposit or Withdrawal'],['Channel','No','Counter / Cash, Mobile money, Bank transfer, Salary deduction, Agent'],['Slip No.','No','Slip / receipt / reference number'],['Remarks','No','Any note'],[],['Delete the two sample rows in the Savings sheet before importing your data.']]),'Instructions');
