@@ -322,8 +322,60 @@ rf.addEventListener('submit',e=>{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>
+<script src="public/js/api.js"></script>
 (()=>{
+/* ---------- API integration setup ---------- */
+API.configure({
+  baseUrl: '/api/v1',
+  storage: 'session'
+});
+
+// helper: convert browser state to server payloads
+const toServerMember = (m) => ({
+  first_name: (m && m.first) || '',
+  last_name: (m && m.last) || '',
+  gender: ((m && m.gender) || 'F').toUpperCase().charAt(0),
+  date_of_birth: (m && m.dob) || null,
+  address: (m && (m.addr || m.address)) || '',
+  telephone: (m && (m.tel || m.phone)) || '',
+  email: (m && m.email) || null,
+  nin: ((m && m.nin) || '').toUpperCase(),
+  photo: (m && m.photo) || null
+});
+
+const toServerSavings = (x) => ({
+  account_number: x.acc,
+  direction: x.w ? 'Withdrawal' : 'Deposit',
+  amount: Number(x.amt),
+  occurred_at: x.date,
+  channel: x.ch || 'Counter / Cash',
+  slip_number: x.slip || '',
+  remarks: x.rm || ''
+});
+
+const toServerLoanRequest = (q) => ({
+  applicant_type: q.type === 'm' ? 'm' : 'n',
+  account_number: q.acc || null,
+  applicant_name: q.name || '',
+  telephone: q.tel || '',
+  email: q.email || null,
+  address: q.addr || null,
+  category: q.cat || '',
+  term_months: Number(q.term),
+  principal: Number(q.amt),
+  rate_monthly: Number(q.rate),
+  nin: q.nin || null
+});
+
+const toServerRepayment = (loanServerId, amount, paymentDate, paymentType) => ({
+  amount: Number(amount),
+  payment_date: paymentDate,
+  payment_type: paymentType || 'Installment'
+});
+API.configure({
+  baseUrl: '/api/v1',
+  storage: 'session'
+});
 const $=s=>document.querySelector(s),V=$('#view'),fmt=n=>'UGX '+Math.round(n||0).toLocaleString(),iso=d=>new Date(d).toISOString().slice(0,10);
 const PERMS=['Approve loans','Acknowledge savings/deposits','Acknowledge loan repayments','Set interest rates','Create/remove system users','Create/remove member accounts','Weekly reports','Monthly reports','Annual reports'];
 const ROLES=['Admin','Treasurer','Credit Supervisor','Credit Officer'];
@@ -340,6 +392,7 @@ const who=l=>{const m=mem(l.acc);if(m)return{acc:m.acc,name:m.first+' '+m.last,n
 const nmv=w=>w.nm?`<i>${esc(w.name)}</i>`:esc(w.name);
 const mopts=()=>S.members.map(m=>`<option value="${m.acc}">${m.acc} — ${esc(m.first)} ${esc(m.last)}</option>`).join('');
 // login
+const result = await API.auth.login(email, password);
 const f=$('#login form');f.onsubmit=e=>{e.preventDefault();const id=f.querySelector('[name=id]').value.trim().toLowerCase(),pw=f.querySelector('[name=pw]').value;let m=$('#lerr');if(!m){m=document.createElement('p');m.id='lerr';m.style.cssText='color:#D62828;font-weight:700;margin-top:1rem;text-align:center';f.appendChild(m)}
  const u=S.users.find(x=>(x.email.toLowerCase()==id||x.email.toLowerCase()==id+'@elitesacco.co.ug')&&(x.pw?x.pw==pw:(x.role=='Admin'&&pw=='Admin')));if(u){cu=u;audit('Login','Signed in successfully');m.textContent='';document.body.classList.add('in');$('#who').textContent='Signed in as '+u.email+' · '+u.role;$('#sbLogo').src=document.querySelector('.brand img').src;$('#wmLogo').src=document.querySelector('#login>img').src;go('home')}else{audit('Failed login','Failed sign-in attempt for "'+id+'"',{name:id||'unknown',role:'—',ini:'—'});m.textContent='Invalid email or password.'}};
 $('#logout').onclick=()=>{audit('Logout','Signed out');document.body.classList.remove('in','blank');pinReset();f.reset()};
