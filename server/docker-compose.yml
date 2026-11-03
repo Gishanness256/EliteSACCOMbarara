@@ -86,3 +86,5 @@ networks:
   sacco-net:
     name: elite_sacco_net
     driver: bridge
+cd server
+docker compose up -d db
