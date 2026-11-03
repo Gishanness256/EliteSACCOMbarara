@@ -769,14 +769,70 @@ lreq(){
  $('#qt').onchange=mode;$('#qc').onchange=$('#ql').oninput=rate;$('#qr').oninput=()=>{$('#qr').dataset.m=1};
  $('#qm').onchange=()=>{const m=mem($('#qm').value);$('#qn').value=m?m.first+' '+m.last:'';$('#qp').value=m?m.tel:'';$('#qe').value=m?m.email||'':'';$('#qad').value=m?m.addr||'':''};
  $('#qx2').onclick=R.lreq;rate();
- $('#qs').onclick=()=>{const m=mb(),nm=$('#qn').value.trim(),tel=$('#qp').value.trim(),A=num($('#qam').value),T=Math.round(num($('#ql').value));
-  if(m&&!$('#qm').value)return say('Select a member.',1);if(!nm)return say('Applicant name is required.',1);if(!tel)return say('Contact telephone is required.',1);
-  if(!$('#qd').value)return say('Choose the date.',1);if(A<=0)return say('Enter the amount to borrow.',1);if(T<1||T>60)return say('Loan term must be 1–60 months.',1);const RT=+num($('#qr').value).toFixed(2);if(RT<=0||RT>30)return say('Enter an interest rate between 0.01 and 30 % per month.',1);
-  let nid;if(!m){nid=findNon(nm,tel,$('#qx').value.trim()).id}
-  S.lseq=(S.lseq||0)+1;const id='LR-'+String(S.lseq).padStart(4,'0');
-  S.reqs.push({id,date:$('#qd').value,type:m?'m':'n',acc:m?$('#qm').value:'',nid,name:nm,tel,email:$('#qe').value.trim(),addr:$('#qad').value.trim(),cat:$('#qc').value,term:T,amt:A,rate:RT,status:'Pending',by:cu.name,byIni:me()});
-  audit('Loan request submitted',id+' — '+nm+', '+$('#qc').value+', UGX '+Math.round(A).toLocaleString()+', '+RT+'% per month, '+T+' months');save();R.lreq();say('Request '+id+' submitted for Admin approval.')}},
+ $('#qs').onclick = async () => {
+  const m = $('#qt').value == 'm';
+  const nm = $('#qn').value.trim();
+  const tel = $('#qp').value.trim();
+  const A = num($('#qam').value);
+  const T = Math.round(num($('#ql').value));
+  const RT = +num($('#qr').value);
 
+  if (m && !$('#qm').value) return say('Select a member.', 1);
+  if (!nm) return say('Applicant name is required.', 1);
+  if (!tel) return say('Contact telephone is required.', 1);
+  if (!$('#qd').value) return say('Choose the date.', 1);
+  if (A <= 0) return say('Enter the amount to borrow.', 1);
+  if (T < 1 || T > 60) return say('Loan term must be 1–60 months.', 1);
+
+  const payload = {
+    applicant_type: m ? 'm' : 'n',
+    account_number: m ? $('#qm').value : null,
+    applicant_name: nm,
+    telephone: tel,
+    email: $('#qe').value.trim() || null,
+    address: $('#qad').value.trim() || null,
+    category: $('#qc').value,
+    term_months: T,
+    principal: A,
+    rate_monthly: RT,
+    nin: $('#qx').value.trim() || null
+  };
+
+  try {
+    const { request } = await API.loanRequests.create(payload);
+
+    const rec = {
+      id: request.reference,
+      date: request.request_date,
+      type: request.applicant_type,
+      acc: request.account_number || '',
+      nid: request.non_member_id || '',
+      name: request.applicant_name,
+      tel: request.telephone,
+      email: request.email || '',
+      addr: request.address || '',
+      cat: request.category,
+      term: request.term_months,
+      amt: Number(request.principal),
+      rate: Number(request.rate_monthly),
+      status: request.status,
+      remark: request.remark || '',
+      serverId: request.id
+    };
+
+    S.reqs.push(rec);
+
+    audit('Loan request submitted',
+      rec.id + ' — ' + rec.name + ', ' + rec.cat + ', UGX ' + Math.round(rec.amt).toLocaleString() +
+      ', ' + rec.rate + '% per month, ' + rec.term + ' months'
+    );
+    save();
+    R.lreq();
+    say('Request ' + rec.id + ' submitted for approval.');
+  } catch (err) {
+    say(err && err.message ? err.message : 'Loan request submission failed.', 1);
+  }
+};
 lapp(){
  const pend=S.reqs.filter(q=>q.status=='Pending'||q.status=='On Hold'),done=S.reqs.filter(q=>q.status=='Approved'||q.status=='Rejected');
  const info=q=>{if(q.type!='m')return'—';const lb=S.loans.filter(l=>l.acc==q.acc).reduce((t,l)=>t+bal(l).b,0);return`Savings ${fmt(sv(q.acc))}<br>Loans ${fmt(lb)}`};
