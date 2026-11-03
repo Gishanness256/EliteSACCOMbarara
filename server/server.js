@@ -176,7 +176,6 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
@@ -195,8 +194,6 @@ if (!fs.existsSync(dataDir)) {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-const db = new sqlite3.Database(dbPath);
 
 function ensureDatabase() {
   return new Promise((resolve, reject) => {
