@@ -1,32 +1,27 @@
 'use strict';
 
 /**
- * ============================================================================
+ * ================================================================================
  * Elite SACCO Mbarara — API server entry point
- * ----------------------------------------------------------------------------
+ * ================================================================================
+ *
  * Wires together:
- *   - PostgreSQL connection pool (pg) → tables from 001–004 migrations
- *   - Per-request audit context (sets app.current_user_id / app.session_id
- *     session GUCs so the audit_table_trigger() in 004_audit.sql attributes
- *     every row change to the acting user)
+ *   - PostgreSQL connection pool (pg)
+ *   - Per-request audit context for the audit trigger
  *   - JWT authentication middleware
  *   - Helmet + CORS + rate-limit hardening
  *   - Winston structured logging
  *   - Health, auth, users, members, savings, loans, regulatory, audit routes
  *   - Graceful shutdown on SIGTERM / SIGINT
- * ============================================================================
+ * ================================================================================
  */
 
-// express-async-errors must be required before any route is registered so
-// unhandled async rejections are forwarded to Express's error handler.
 require('express-async-errors');
 
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
-const crypto = require('crypto');
 
-// --- Config --------------------------------------------------------------
 require('dotenv').config({ path: path.resolve(process.cwd(), '.env') });
 
 const config = {
@@ -41,9 +36,10 @@ const config = {
     database: process.env.PGDATABASE || 'elite_sacco',
     user: process.env.PGUSER || 'sacco',
     password: process.env.PGPASSWORD || 'sacco',
-    ssl: process.env.PGSSLMODE && process.env.PGSSLMODE !== 'disable'
-      ? { rejectUnauthorized: process.env.PGSSLMODE === 'verify-full' }
-      : false,
+    ssl:
+      process.env.PGSSLMODE && process.env.PGSSLMODE !== 'disable'
+        ? { rejectUnauthorized: process.env.PGSSLMODE === 'verify-full' }
+        : false,
     max: parseInt(process.env.PGPOOL_MAX || '20', 10),
     idleTimeoutMillis: parseInt(process.env.PGPOOL_IDLE_TIMEOUT_MS || '30000', 10),
     connectionTimeoutMillis: parseInt(process.env.PGPOOL_CONNECTION_TIMEOUT_MS || '5000', 10),
@@ -66,7 +62,6 @@ const config = {
   uploadDir: process.env.UPLOAD_DIR || path.resolve(process.cwd(), 'uploads'),
 };
 
-// Fail fast in production if JWT_SECRET is the dev default
 if (config.env === 'production' && config.jwt.secret.startsWith('dev-only-')) {
   console.error('FATAL: JWT_SECRET must be set to a strong random value in production.');
   process.exit(1);
@@ -94,9 +89,10 @@ const logger = winston.createLogger({
         winston.format.colorize(),
         winston.format.printf((info) => {
           const { timestamp, level, message, ...meta } = info;
-          const metaStr = Object.keys(meta).length && meta.service
-            ? ` ${JSON.stringify({ ...meta, service: undefined })}`
-            : '';
+          const metaStr =
+            Object.keys(meta).length && meta.service
+              ? ` ${JSON.stringify({ ...meta, service: undefined })}`
+              : '';
           return `${timestamp} [${level}] ${message}${metaStr}`;
         }),
       ),
@@ -137,7 +133,10 @@ const pool = new Pool({
 });
 
 pool.on('error', (err) => {
-  logger.error('Unexpected error on idle PostgreSQL client', { error: err.message, stack: err.stack });
+  logger.error('Unexpected error on idle PostgreSQL client', {
+    error: err.message,
+    stack: err.stack,
+  });
 });
 
 /**
@@ -150,10 +149,10 @@ async function withTransaction(userId, sessionId, fn) {
   try {
     await client.query('BEGIN');
     if (userId != null) {
-      await client.query("SET LOCAL app.current_user_id = $1", [String(userId)]);
+      await client.query('SET LOCAL app.current_user_id = $1', [String(userId)]);
     }
     if (sessionId) {
-      await client.query("SET LOCAL app.session_id = $1", [sessionId]);
+      await client.query('SET LOCAL app.session_id = $1', [sessionId]);
     }
     const result = await fn(client);
     await client.query('COMMIT');
@@ -175,76 +174,43 @@ function query(text, params) {
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
+const { v4: uuidv4 } = require('uuid');
+const createError = require('http-errors');
+const helmet = require('helmet');
+const bcrypt = require('bcrypt');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-//
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-const db = new sqlite3.Database(dbPath);
-
-function ensureDatabase() {
-  //...
-    db.serialize(() => {
-      db.run(`
-        CREATE TABLE IF NOT EXISTS users (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          first_name TEXT NOT NULL,
-          last_name TEXT NOT NULL,
-          address TEXT NOT NULL,
-          phone TEXT NOT NULL UNIQUE,
-          email TEXT UNIQUE,
-          nin TEXT NOT NULL UNIQUE,
-          password_hash TEXT NOT NULL,
-          role TEXT NOT NULL DEFAULT 'member',
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `, (err) => {
-        if (err) return reject(err);
-
-        const adminEmail = 'admin@elitesacco.co.ug';
-        const adminPhone = '+256700000000';
-        const adminPassword = 'Admin';
-        const adminHash = bcrypt.hashSync(adminPassword, 10);
-
-        db.run(
-          `INSERT OR IGNORE INTO users
-           (first_name, last_name, address, phone, email, nin, password_hash, role)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-          ['System', 'Admin', 'Head Office', adminPhone, adminEmail, 'NINADMIN000', adminHash, 'Admin'],
-          (insertErr) => {
-            if (insertErr) return reject(insertErr);
-            resolve();
-          }
-
-// Trust the first proxy (so req.ip and X-Forwarded-* are honored behind nginx/LB)
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
-// --- Security & middleware stack ----------------------------------------
-app.use(cors({
-  origin(origin, cb) {
-    // Allow same-origin / curl (no origin) and any whitelisted origin
-    if (!origin || config.cors.origins.includes(origin) || config.cors.origins.includes('*')) {
-      cb(null, true);
-    } else {
-      cb(createError(403, `CORS blocked for origin ${origin}`));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Authorization', 'Content-Type', 'X-Request-Id', 'X-Trace-Id'],
-  exposedHeaders: ['X-Request-Id', 'X-Trace-Id'],
-}));
+app.use(helmet());
+
+app.use(
+  cors({
+    origin(origin, cb) {
+      if (!origin || config.cors.origins.includes(origin) || config.cors.origins.includes('*')) {
+        cb(null, true);
+      } else {
+        cb(createError(403, `CORS blocked for origin ${origin}`));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Authorization', 'Content-Type', 'X-Request-Id', 'X-Trace-Id'],
+    exposedHeaders: ['X-Request-Id', 'X-Trace-Id'],
+  }),
+);
+
 app.use(compression());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(cookieParser());
 
-// Ensure upload directory exists
 if (!fs.existsSync(config.uploadDir)) {
   fs.mkdirSync(config.uploadDir, { recursive: true });
 }
@@ -270,21 +236,25 @@ const morganStream = {
     }
   },
 };
+
 morgan.token('request-id', (req) => req.id || '-');
 morgan.token('trace-id', (req) => req.traceId || '-');
-app.use(morgan(
-  JSON.stringify({
-    method: ':method',
-    url: ':url',
-    status: ':status',
-    duration_ms: ':response-time',
-    ip: ':remote-addr',
-    referrer: ':referrer',
-    request_id: ':request-id',
-    trace_id: ':trace-id',
-  }),
-  { stream: morganStream, skip: (req) => req.path === '/health' },
-));
+
+app.use(
+  morgan(
+    JSON.stringify({
+      method: ':method',
+      url: ':url',
+      status: ':status',
+      duration_ms: ':response-time',
+      ip: ':remote-addr',
+      referrer: ':referrer',
+      request_id: ':request-id',
+      trace_id: ':trace-id',
+    }),
+    { stream: morganStream, skip: (req) => req.path === '/health' },
+  ),
+);
 
 // --- Rate limiting ------------------------------------------------------
 const limiter = rateLimit({
@@ -336,7 +306,6 @@ async function authRequired(req, res, next) {
 
     const payload = jwt.verify(token, config.jwt.secret);
 
-    // Re-fetch the user so role/name changes take effect immediately
     const { rows } = await query(
       `SELECT id, name, email, role::text AS role, initials, is_active
          FROM users
@@ -360,7 +329,6 @@ async function authRequired(req, res, next) {
 
 /**
  * Checks that the authenticated user holds one of the allowed roles.
- * Usage: router.post('/users', authRequired, requireRole('Admin'), handler);
  */
 function requireRole(...roles) {
   return (req, res, next) => {
@@ -373,8 +341,7 @@ function requireRole(...roles) {
 }
 
 /**
- * Checks that the user holds a specific permission code (from the
- * role_permissions table seeded in 001_init.sql).
+ * Checks that the user holds a specific permission code.
  */
 function requirePermission(code) {
   return async (req, res, next) => {
@@ -402,8 +369,6 @@ function requirePermission(code) {
 // --- Audit helper -------------------------------------------------------
 /**
  * Writes a single audit_log entry via the log_audit_event() SQL function.
- * Use this for business events not tied to a single table change
- * (login, report generation, bulk imports, etc.).
  */
 async function logAuditEvent(client, event) {
   const sql = `SELECT log_audit_event($1, $2, $3, $4, $5, $6, $7, $8, $9::inet, $10) AS id`;
@@ -415,7 +380,7 @@ async function logAuditEvent(client, event) {
     event.userId || null,
     event.tableName || null,
     event.recordId || null,
-    event.sessionId || req.sessionId || null,
+    event.sessionId || null,
     event.ipAddress || null,
     event.userAgent || null,
   ];
@@ -424,7 +389,7 @@ async function logAuditEvent(client, event) {
 
 // --- Routes =============================================================
 
-// Health check (no auth, no rate limit) ---------------------------------
+// Health check
 app.get('/health', async (req, res) => {
   const start = Date.now();
   try {
@@ -453,7 +418,7 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// Readiness check — verifies migrations are applied --------------------
+// Readiness check
 app.get('/ready', async (req, res) => {
   try {
     const { rows } = await query(`
@@ -464,7 +429,7 @@ app.get('/ready', async (req, res) => {
                             'savings_transactions','audit_log','regulatory_config')
        ORDER BY table_name
     `);
-    const expected = ['audit_log','loans','loan_repayments','members','regulatory_config','savings_transactions','users'];
+    const expected = ['audit_log', 'loans', 'loan_repayments', 'members', 'regulatory_config', 'savings_transactions', 'users'];
     const found = rows.map((r) => r.table_name);
     const missing = expected.filter((t) => !found.includes(t));
     if (missing.length) {
@@ -497,15 +462,12 @@ v1.post('/auth/login', authLimiter, async (req, res, next) => {
       [fullEmail],
     );
 
-    // Always run the hash compare to avoid timing-based user enumeration
-    const bcrypt = require('bcrypt');
     const dummyHash = '$2b$12$abcdefghijklmnopqrstuv';
     const valid = rows.length
       ? await bcrypt.compare(password, rows[0].password_hash || dummyHash)
-      : (await bcrypt.compare(password, dummyHash), false);
+      : false;
 
     if (!rows.length || !valid || !rows[0].is_active) {
-      // Log failed attempt (the audit_table_trigger won't fire since no row changed)
       await withTransaction(null, req.sessionId, async (client) => {
         await client.query(
           `SELECT log_audit_event(
@@ -514,12 +476,7 @@ v1.post('/auth/login', authLimiter, async (req, res, next) => {
             'authentication'::audit_category,
             'warning'::audit_severity,
             NULL, NULL, NULL, $2, $3::inet, $4)`,
-          [
-            `Failed sign-in attempt for "${fullEmail}"`,
-            req.sessionId,
-            req.ip,
-            req.headers['user-agent'] || null,
-          ],
+          [`Failed sign-in attempt for "${fullEmail}"`, req.sessionId, req.ip, req.headers['user-agent'] || null],
         );
       });
       throw createError(401, 'Invalid email or password.');
@@ -619,7 +576,6 @@ v1.post('/users', authRequired, requirePermission('manage_users'), async (req, r
       throw createError(400, 'Password must be at least 6 characters.');
     }
 
-    const bcrypt = require('bcrypt');
     const email = `${handle}@elitesacco.co.ug`;
     const hash = await bcrypt.hash(password, config.bcryptRounds);
 
@@ -690,7 +646,6 @@ v1.post('/members', authRequired, requirePermission('manage_members'), async (re
     }
 
     const result = await withTransaction(req.user.id, req.sessionId, async (client) => {
-      // Atomically get the next account number sequence
       const { rows: seqRows } = await client.query(
         `SELECT COALESCE(MAX(
                   CAST(SUBSTRING(account_number FROM POSITION(' ' IN account_number) + 1) AS INTEGER
@@ -709,8 +664,17 @@ v1.post('/members', authRequired, requirePermission('manage_members'), async (re
          VALUES ($1, $2, $3, $4::member_gender, $5, $6, $7, $8, $9, $10, $11)
          RETURNING *`,
         [
-          accountNumber, first_name, last_name, gender, date_of_birth || null,
-          address || null, nin.toUpperCase(), telephone, email || null, photo || null, req.user.id,
+          accountNumber,
+          first_name,
+          last_name,
+          gender,
+          date_of_birth || null,
+          address || null,
+          nin.toUpperCase(),
+          telephone,
+          email || null,
+          photo || null,
+          req.user.id,
         ],
       );
       return rows[0];
@@ -773,7 +737,6 @@ v1.post('/savings', authRequired, requirePermission('ack_savings'), async (req, 
     }
 
     const result = await withTransaction(req.user.id, req.sessionId, async (client) => {
-      // Check balance for withdrawals
       if (direction === 'Withdrawal') {
         const { rows: balRows } = await client.query(
           `SELECT COALESCE(SUM(CASE direction WHEN 'Deposit' THEN amount ELSE -amount END), 0) AS balance
@@ -786,7 +749,6 @@ v1.post('/savings', authRequired, requirePermission('ack_savings'), async (req, 
         }
       }
 
-      // Generate next reference SV-NNNNNN
       const { rows: seqRows } = await client.query(
         `SELECT COALESCE(MAX(CAST(SUBSTRING(reference FROM 4) AS INTEGER)), 0) + 1 AS next_seq
            FROM savings_transactions
@@ -801,10 +763,16 @@ v1.post('/savings', authRequired, requirePermission('ack_savings'), async (req, 
          VALUES ($1, $2, $3::tx_direction, $4, $5, $6::savings_channel, $7, $8, $9, $10)
          RETURNING *`,
         [
-          reference, account_number, direction, amount,
+          reference,
+          account_number,
+          direction,
+          amount,
           occurred_at ? new Date(occurred_at) : new Date(),
-          channel || 'Counter / Cash', slip_number || null, remarks || null,
-          req.user.id, req.user.initials,
+          channel || 'Counter / Cash',
+          slip_number || null,
+          remarks || null,
+          req.user.id,
+          req.user.initials,
         ],
       );
       return rows[0];
@@ -828,7 +796,9 @@ v1.get('/loans', authRequired, async (req, res, next) => {
     }
     if (q) {
       params.push(`%${q.toLowerCase()}%`);
-      clauses.push(`(LOWER(l.borrower_name) LIKE $${params.length} OR LOWER(COALESCE(l.account_number,'')) LIKE $${params.length})`);
+      clauses.push(
+        `(LOWER(l.borrower_name) LIKE $${params.length} OR LOWER(COALESCE(l.account_number,'')) LIKE $${params.length})`,
+      );
     }
     params.push(parseInt(limit, 10));
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
@@ -881,7 +851,6 @@ v1.post('/loans/:id/repayments', authRequired, requirePermission('ack_loan_repay
     }
 
     const result = await withTransaction(req.user.id, req.sessionId, async (client) => {
-      // Verify the loan exists and the payment doesn't exceed balance
       const { rows: balRows } = await client.query(
         `SELECT loan_outstanding_balance(id, $2) AS balance, disbursed_on
            FROM loans WHERE id = $1`,
@@ -942,8 +911,7 @@ v1.get('/loan-requests', authRequired, async (req, res, next) => {
 
 v1.post('/loan-requests', authRequired, async (req, res, next) => {
   try {
-    const { applicant_type, account_number, applicant_name, telephone, email, address,
-            category, term_months, principal, rate_monthly, nin } = req.body;
+    const { applicant_type, account_number, applicant_name, telephone, email, address, category, term_months, principal, rate_monthly, nin } = req.body;
     if (!applicant_name || !telephone || !category || !term_months || !principal || !rate_monthly) {
       throw createError(400, 'applicant_name, telephone, category, term_months, principal and rate_monthly are required.');
     }
@@ -952,7 +920,6 @@ v1.post('/loan-requests', authRequired, async (req, res, next) => {
     }
 
     const result = await withTransaction(req.user.id, req.sessionId, async (client) => {
-      // Generate next reference LR-NNNN
       const { rows: seqRows } = await client.query(
         `SELECT COALESCE(MAX(CAST(SUBSTRING(reference FROM 4) AS INTEGER)), 0) + 1 AS next_seq
            FROM loan_requests WHERE reference LIKE 'LR-%'`,
@@ -968,10 +935,19 @@ v1.post('/loan-requests', authRequired, async (req, res, next) => {
                  'Pending'::loan_status, $12, $13)
          RETURNING *`,
         [
-          reference, applicant_type || 'm', account_number || null,
-          applicant_name, telephone, email || null, address || null,
-          category, term_months, principal, rate_monthly,
-          req.user.id, req.user.initials,
+          reference,
+          applicant_type || 'm',
+          account_number || null,
+          applicant_name,
+          telephone,
+          email || null,
+          address || null,
+          category,
+          term_months,
+          principal,
+          rate_monthly,
+          req.user.id,
+          req.user.initials,
         ],
       );
       return rows[0];
@@ -992,7 +968,6 @@ v1.patch('/loan-requests/:id', authRequired, requirePermission('approve_loans'),
     }
 
     const result = await withTransaction(req.user.id, req.sessionId, async (client) => {
-      // Update the request
       const { rows: reqRows } = await client.query(
         `UPDATE loan_requests
             SET status = $2::loan_status,
@@ -1008,7 +983,6 @@ v1.patch('/loan-requests/:id', authRequired, requirePermission('approve_loans'),
 
       const request = reqRows[0];
 
-      // If approved, create the loan
       if (status === 'Approved') {
         const { rows: loanSeqRows } = await client.query(
           `SELECT COALESCE(MAX(CAST(SUBSTRING(reference FROM 4) AS INTEGER)), 0) + 1 AS next_seq
@@ -1025,14 +999,21 @@ v1.patch('/loan-requests/:id', authRequired, requirePermission('approve_loans'),
                    CURRENT_DATE, 'Active'::loan_lifecycle_status, $11, $12)
            RETURNING *`,
           [
-            loanRef, request.id, request.account_number, request.non_member_id,
-            request.applicant_name, request.telephone, request.category,
-            request.term_months, request.principal, request.rate_monthly,
-            req.user.id, req.user.initials,
+            loanRef,
+            request.id,
+            request.account_number,
+            request.non_member_id,
+            request.applicant_name,
+            request.telephone,
+            request.category,
+            request.term_months,
+            request.principal,
+            request.rate_monthly,
+            req.user.id,
+            req.user.initials,
           ],
         );
 
-        // Generate the amortization schedule (from 002_loans.sql)
         await client.query('SELECT generate_loan_schedule($1)', [loanRows[0].id]);
 
         return { request, loan: loanRows[0] };
@@ -1054,31 +1035,33 @@ v1.get('/regulatory/snapshot/:year/:month', authRequired, async (req, res, next)
     const month = parseInt(req.params.month, 10);
     if (month < 1 || month > 12) throw createError(400, 'month must be 1-12.');
 
-    const { rows } = await query(
-      'SELECT build_regulatory_snapshot($1, $2) AS snapshot',
-      [year, month],
-    );
+    const { rows } = await query('SELECT build_regulatory_snapshot($1, $2) AS snapshot', [year, month]);
     res.json({ period: `${year}-${String(month).padStart(2, '0')}`, snapshot: rows[0].snapshot });
   } catch (err) {
     next(err);
   }
 });
 
-v1.post('/regulatory/persist', authRequired, requireRole('Admin', 'Treasurer', 'Credit Supervisor'), async (req, res, next) => {
-  try {
-    const { year, month, template_id, basis = 'm', n_months = 1, notes } = req.body;
-    if (!year || !month || !template_id) {
-      throw createError(400, 'year, month and template_id are required.');
+v1.post(
+  '/regulatory/persist',
+  authRequired,
+  requireRole('Admin', 'Treasurer', 'Credit Supervisor'),
+  async (req, res, next) => {
+    try {
+      const { year, month, template_id, basis = 'm', n_months = 1, notes } = req.body;
+      if (!year || !month || !template_id) {
+        throw createError(400, 'year, month and template_id are required.');
+      }
+      const { rows } = await query(
+        'SELECT persist_regulatory_snapshot($1, $2, $3, $4::reporting_basis, $5, $6, $7) AS snapshot_id',
+        [year, month, template_id, basis, n_months, req.user.id, notes || null],
+      );
+      res.status(201).json({ snapshot_id: rows[0].snapshot_id });
+    } catch (err) {
+      next(err);
     }
-    const { rows } = await query(
-      'SELECT persist_regulatory_snapshot($1, $2, $3, $4::reporting_basis, $5, $6, $7) AS snapshot_id',
-      [year, month, template_id, basis, n_months, req.user.id, notes || null],
-    );
-    res.status(201).json({ snapshot_id: rows[0].snapshot_id });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
 v1.get('/regulatory/templates', authRequired, async (req, res, next) => {
   try {
@@ -1100,10 +1083,22 @@ v1.get('/audit/log', authRequired, requireRole('Admin'), async (req, res, next) 
     const { category, severity, table_name, officer_id, limit = '100', offset = '0' } = req.query;
     const params = [];
     const clauses = ['is_archived = FALSE'];
-    if (category) { params.push(category); clauses.push(`category = $${params.length}::audit_category`); }
-    if (severity) { params.push(severity); clauses.push(`severity = $${params.length}::audit_severity`); }
-    if (table_name) { params.push(table_name); clauses.push(`table_name = $${params.length}`); }
-    if (officer_id) { params.push(officer_id); clauses.push(`officer_id = $${params.length}`); }
+    if (category) {
+      params.push(category);
+      clauses.push(`category = $${params.length}::audit_category`);
+    }
+    if (severity) {
+      params.push(severity);
+      clauses.push(`severity = $${params.length}::audit_severity`);
+    }
+    if (table_name) {
+      params.push(table_name);
+      clauses.push(`table_name = $${params.length}`);
+    }
+    if (officer_id) {
+      params.push(officer_id);
+      clauses.push(`officer_id = $${params.length}`);
+    }
 
     params.push(parseInt(limit, 10), parseInt(offset, 10));
     const { rows } = await query(
@@ -1155,14 +1150,18 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   const status = err.status || err.statusCode || 500;
   const payload = {
-    error: err.code || (status === 404 ? 'not_found' : status === 401 ? 'unauthorized' : status === 403 ? 'forbidden' : 'internal_error'),
-    message: err.expose ? err.message : (status < 500 ? err.message : 'An internal error occurred.'),
+    error:
+      err.code ||
+      (status === 404 ? 'not_found' : status === 401 ? 'unauthorized' : status === 403 ? 'forbidden' : 'internal_error'),
+    message: err.expose ? err.message : status < 500 ? err.message : 'An internal error occurred.',
     request_id: req.id,
     trace_id: req.traceId,
   };
+
   if (config.env === 'development' && status >= 500) {
     payload.stack = err.stack;
   }
+
   if (status >= 500) {
     logger.error('Unhandled server error', {
       error: err.message,
@@ -1180,6 +1179,7 @@ app.use((err, req, res, next) => {
       path: req.path,
     });
   }
+
   res.status(status).json(payload);
 });
 
@@ -1204,7 +1204,6 @@ async function shutdown(signal) {
   shuttingDown = true;
   logger.info(`Received ${signal}, shutting down gracefully...`, { active_requests: activeRequests });
 
-  // Stop accepting new connections
   server.close(async () => {
     logger.info('HTTP server closed.');
     try {
@@ -1217,7 +1216,6 @@ async function shutdown(signal) {
     process.exit(0);
   });
 
-  // Force-exit after 30s if connections won't drain
   setTimeout(() => {
     logger.error('Forcing shutdown after 30s timeout.', { active_requests: activeRequests });
     process.exit(1);
@@ -1231,35 +1229,36 @@ process.on('uncaughtException', (err) => {
   shutdown('uncaughtException');
 });
 process.on('unhandledRejection', (reason) => {
-  logger.error('Unhandled rejection', { reason: reason && reason.message ? reason.message : String(reason) });
+  logger.error('Unhandled rejection', {
+    reason: reason && reason.message ? reason.message : String(reason),
+  });
   shutdown('unhandledRejection');
 });
 
 // --- Start listening ----------------------------------------------------
 async function start() {
   try {
-    // Verify DB connectivity before listening
     const { rows } = await pool.query('SELECT NOW() AS now');
     logger.info('Connected to PostgreSQL', { server_time: rows[0].now });
 
     server.listen(config.port, config.host, () => {
-      logger.info(`Elite SACCO Mbarara API listening`, {
+      logger.info('Elite SACCO Mbarara API listening', {
         url: `http://${config.host}:${config.port}`,
         env: config.env,
         node_version: process.version,
         pid: process.pid,
       });
       logger.info('Available endpoints', {
-        health: `GET  /health`,
-        ready:  `GET  /ready`,
-        auth:   `POST /api/v1/auth/login | /auth/logout | GET /auth/me`,
-        users:  `GET  /api/v1/users | POST /api/v1/users | DELETE /api/v1/users/:id`,
-        members:`GET  /api/v1/members | POST /api/v1/members | GET /api/v1/members/:account`,
-        savings:`GET  /api/v1/savings | POST /api/v1/savings`,
-        loans:  `GET  /api/v1/loans | GET /api/v1/loans/:id | POST /api/v1/loans/:id/repayments`,
-        requests:`GET /api/v1/loan-requests | POST /api/v1/loan-requests | PATCH /api/v1/loan-requests/:id`,
-        reg:    `GET  /api/v1/regulatory/templates | GET /api/v1/regulatory/snapshot/:year/:month | POST /api/v1/regulatory/persist`,
-        audit:  `GET  /api/v1/audit/log | GET /api/v1/audit/verify | GET /api/v1/audit/high-severity`,
+        health: 'GET  /health',
+        ready: 'GET  /ready',
+        auth: 'POST /api/v1/auth/login | /auth/logout | GET /auth/me',
+        users: 'GET  /api/v1/users | POST /api/v1/users | DELETE /api/v1/users/:id',
+        members: 'GET  /api/v1/members | POST /api/v1/members | GET /api/v1/members/:account',
+        savings: 'GET  /api/v1/savings | POST /api/v1/savings',
+        loans: 'GET  /api/v1/loans | GET /api/v1/loans/:id | POST /api/v1/loans/:id/repayments',
+        requests: 'GET /api/v1/loan-requests | POST /api/v1/loan-requests | PATCH /api/v1/loan-requests/:id',
+        reg: 'GET  /api/v1/regulatory/templates | GET /api/v1/regulatory/snapshot/:year/:month | POST /api/v1/regulatory/persist',
+        audit: 'GET  /api/v1/audit/log | GET /api/v1/audit/verify | GET /api/v1/audit/high-severity',
       });
     });
   } catch (err) {
