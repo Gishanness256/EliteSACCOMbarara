@@ -1,0 +1,94 @@
+# ============================================================
+# Elite SACCO Mbarara PWA
+# Components: index.html (app) · server.js (Express) · app.db (SQLite)
+# ============================================================
+
+# --- Database: live member, loan, savings & password data ---
+# Never commit the working database. It holds real financial records
+# and user passwords (the app stores them inside the state).
+app.db
+*.db
+*.sqlite
+*.sqlite3
+# SQLite WAL mode sidecar files (server.js sets journal_mode = WAL)
+*.db-wal
+*.db-shm
+*.db-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# Keep a schema-only / empty template DB if you want one in the repo
+!app.template.db
+!schema.sql
+
+# --- Legacy data & backups ---
+# Old Node-only runtime file that server.js auto-imports
+esacco-data.json
+backups/
+backup/
+*.bak
+*.backup
+*.dump
+*.sql.gz
+exports/
+
+# --- Node.js ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+.pnpm-store/
+.yarn/cache
+.yarn/install-state.gz
+.eslintcache
+*.tgz
+# Uncomment to ignore the lockfile (generally keep it committed)
+# package-lock.json
+
+# --- Environment & secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+
+# --- Logs & runtime ---
+logs/
+*.log
+*.pid
+*.pid.lock
+*.seed
+
+# --- Build / coverage output ---
+dist/
+build/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# --- Editors & IDEs ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# --- Temp ---
+tmp/
+temp/
+*.tmp
