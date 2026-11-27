@@ -1,0 +1,20 @@
+{
+  "name": "elite-sacco-mbarara",
+  "version": "1.0.0",
+  "description": "Elite SACCO Mbarara — standalone Express + SQLite (better-sqlite3) server and single-page app",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "start:network": "HOST=0.0.0.0 node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "express": "^4.21.2"
+  },
+  "license": "UNLICENSED"
+}
